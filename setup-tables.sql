@@ -1,5 +1,5 @@
 CREATE TABLE type_weaknesses (
-    types VARCHAR(50) PRIMARY KEY,
+    pkmn_type VARCHAR(50) NOT NULL;
     normal DECIMAL(2, 1),
     fire DECIMAL(2, 1),
     water DECIMAL(2, 1),
@@ -17,11 +17,12 @@ CREATE TABLE type_weaknesses (
     dragon DECIMAL(2, 1),
     dark DECIMAL(2, 1),
     steel DECIMAL(2, 1),
-    fairy DECIMAL(2, 1)
+    fairy DECIMAL(2, 1),
+    PRIMARY KEY pkmn_type
 );
 
 CREATE TABLE base_stats (
-    pkmn_name VARCHAR(30) PRIMARY KEY,
+    pkmn_name VARCHAR(30) NOT NULL, 
     type_1 VARCHAR(10) NOT NULL, 
     type_2 VARCHAR(10), 
     base_hp INTEGER NOT NULL, 
@@ -29,27 +30,38 @@ CREATE TABLE base_stats (
     base_special_attack INTEGER NOT NULL, 
     base_defense INTEGER NOT NULL, 
     base_special_defense INTEGER NOT NULL, 
-    base_speed INTEGER NOT NULL
+    base_speed INTEGER NOT NULL,
+    PRIMARY KEY pkmn_name
 );
 
-INSERT INTO type_weaknesses (types, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('normal', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0);
-INSERT INTO type_weaknesses (types, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('fire', 1.0, 0.5, 2.0, 1.0, 0.5, 0.5, 1.0, 1.0, 2.0, 1.0, 1.0, 0.5, 2.0, 1.0, 1.0, 1.0, 0.5, 0.5);
-INSERT INTO type_weaknesses (types, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('water', 1.0, 0.5, 0.5, 2.0, 2.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0);
-INSERT INTO type_weaknesses (types, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('electric', 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 2.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0);
-INSERT INTO type_weaknesses (types, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('grass', 1.0, 2.0, 0.5, 0.5, 0.5, 2.0, 1.0, 2.0, 0.5, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
-INSERT INTO type_weaknesses (types, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('ice', 1.0, 2.0, 1.0, 1.0, 1.0, 0.5, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 2.0, 1.0);
-INSERT INTO type_weaknesses (types, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('fighting', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 0.5, 0.5, 1.0, 1.0, 0.5, 1.0, 2.0);
-INSERT INTO type_weaknesses (types, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('poison', 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 0.5, 0.5, 2.0, 1.0, 2.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5);
-INSERT INTO type_weaknesses (types, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('ground', 1.0, 1.0, 2.0, 0.0, 2.0, 2.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0);
-INSERT INTO type_weaknesses (types, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('flying', 1.0, 1.0, 1.0, 2.0, 0.5, 2.0, 0.5, 1.0, 0.0, 1.0, 1.0, 0.5, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0);
-INSERT INTO type_weaknesses (types, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('psychic', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 0.5, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 1.0);
-INSERT INTO type_weaknesses (types, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('bug', 1.0, 2.0, 1.0, 1.0, 0.5, 1.0, 0.5, 1.0, 0.5, 2.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0);
-INSERT INTO type_weaknesses (types, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('rock', 0.5, 0.5, 2.0, 1.0, 2.0, 1.0, 2.0, 0.5, 2.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0);
-INSERT INTO type_weaknesses (types, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('ghost', 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.5, 1.0, 1.0, 1.0, 0.5, 1.0, 2.0, 1.0, 2.0, 1.0, 1.0);
-INSERT INTO type_weaknesses (types, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('dragon', 1.0, 0.5, 0.5, 0.5, 0.5, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 2.0);
-INSERT INTO type_weaknesses (types, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('dark', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 0.0, 2.0, 1.0, 0.5, 1.0, 0.5, 1.0, 2.0);
-INSERT INTO type_weaknesses (types, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('steel', 0.5, 2.0, 1.0, 1.0, 0.5, 0.5, 2.0, 1.0, 2.0, 0.5, 0.5, 0.5, 0.5, 1.0, 0.5, 1.0, 0.5, 0.5);
-INSERT INTO type_weaknesses (types, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('fairy', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 2.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 0.0, 0.5, 2.0, 1.0);
+CREATE TABLE nature (
+    nature_name VARCHAR(10) NOT NULL, 
+    attack_mult DECIMAL(2, 1) NOT NULL, 
+    special_attack_mult DECIMAL(2, 1) NOT NULL, 
+    defense_mult DECIMAL(2, 1) NOT NULL, 
+    special_defense_mult DECIMAL(2, 1) NOT NULL, 
+    speed_mult DECIMAL(2, 1) NOT NULL, 
+    PRIMARY KEY nature_name
+)
+
+INSERT INTO type_weaknesses (pkmn_type, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('normal', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0);
+INSERT INTO type_weaknesses (pkmn_type, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('fire', 1.0, 0.5, 2.0, 1.0, 0.5, 0.5, 1.0, 1.0, 2.0, 1.0, 1.0, 0.5, 2.0, 1.0, 1.0, 1.0, 0.5, 0.5);
+INSERT INTO type_weaknesses (pkmn_type, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('water', 1.0, 0.5, 0.5, 2.0, 2.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0);
+INSERT INTO type_weaknesses (pkmn_type, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('electric', 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 2.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0);
+INSERT INTO type_weaknesses (pkmn_type, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('grass', 1.0, 2.0, 0.5, 0.5, 0.5, 2.0, 1.0, 2.0, 0.5, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0);
+INSERT INTO type_weaknesses (pkmn_type, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('ice', 1.0, 2.0, 1.0, 1.0, 1.0, 0.5, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 2.0, 1.0);
+INSERT INTO type_weaknesses (pkmn_type, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('fighting', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 0.5, 0.5, 1.0, 1.0, 0.5, 1.0, 2.0);
+INSERT INTO type_weaknesses (pkmn_type, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('poison', 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 0.5, 0.5, 2.0, 1.0, 2.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5);
+INSERT INTO type_weaknesses (pkmn_type, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('ground', 1.0, 1.0, 2.0, 0.0, 2.0, 2.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0);
+INSERT INTO type_weaknesses (pkmn_type, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('flying', 1.0, 1.0, 1.0, 2.0, 0.5, 2.0, 0.5, 1.0, 0.0, 1.0, 1.0, 0.5, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0);
+INSERT INTO type_weaknesses (pkmn_type, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('psychic', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 0.5, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 1.0);
+INSERT INTO type_weaknesses (pkmn_type, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('bug', 1.0, 2.0, 1.0, 1.0, 0.5, 1.0, 0.5, 1.0, 0.5, 2.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0);
+INSERT INTO type_weaknesses (pkmn_type, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('rock', 0.5, 0.5, 2.0, 1.0, 2.0, 1.0, 2.0, 0.5, 2.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0);
+INSERT INTO type_weaknesses (pkmn_type, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('ghost', 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.5, 1.0, 1.0, 1.0, 0.5, 1.0, 2.0, 1.0, 2.0, 1.0, 1.0);
+INSERT INTO type_weaknesses (pkmn_type, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('dragon', 1.0, 0.5, 0.5, 0.5, 0.5, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 2.0);
+INSERT INTO type_weaknesses (pkmn_type, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('dark', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 0.0, 2.0, 1.0, 0.5, 1.0, 0.5, 1.0, 2.0);
+INSERT INTO type_weaknesses (pkmn_type, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('steel', 0.5, 2.0, 1.0, 1.0, 0.5, 0.5, 2.0, 1.0, 2.0, 0.5, 0.5, 0.5, 0.5, 1.0, 0.5, 1.0, 0.5, 0.5);
+INSERT INTO type_weaknesses (pkmn_type, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('fairy', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 2.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 0.0, 0.5, 2.0, 1.0);
 
 INSERT INTO base_stats (pkmn_name, type_1, type_2, base_hp, base_attack, base_defense, special_attack, special_defense, speed) VALUES (bulbasaur, grass, poison, 45, 49, 49, 65, 65, 45);
 INSERT INTO base_stats (pkmn_name, type_1, type_2, base_hp, base_attack, base_defense, special_attack, special_defense, speed) VALUES (ivysaur, grass, poison, 60, 62, 63, 80, 80, 60);
@@ -554,3 +566,29 @@ INSERT INTO base_stats (pkmn_name, type_1, base_hp, base_attack, base_defense, s
 INSERT INTO base_stats (pkmn_name, type_1, base_hp, base_attack, base_defense, special_attack, special_defense, speed) VALUES (shaymin-l, grass, 100, 100, 100, 100, 100, 100);
 INSERT INTO base_stats (pkmn_name, type_1, type_2, base_hp, base_attack, base_defense, special_attack, special_defense, speed) VALUES (shaymin-s, grass, flying, 100, 103, 75, 120, 75, 127);
 INSERT INTO base_stats (pkmn_name, type_1, base_hp, base_attack, base_defense, special_attack, special_defense, speed) VALUES (arceus, normal, 120, 120, 120, 120, 120, 120);
+
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('adamant', 1.1, 0.9, 1.0, 1.0, 1.0);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('bashful', 1.0, 1.0, 1.0, 1.0, 1.0);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('bold', 0.9, 1.0, 1.1, 1.0, 1.0);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('brave', 1.1, 1.0, 1.0, 1.0, 0.9);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('calm', 0.9, 1.0, 1.0, 1.1, 1.0);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('careful', 1.0, 0.9, 1.0, 1.1, 1.0);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('docile', 1.0, 1.0, 1.0, 1.0, 1.0);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('gentle', 1.0, 1.0, 0.9, 1.1, 1.0);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('hardy', 1.0, 1.0, 1.0, 1.0, 1.0);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('hasty', 1.0, 1.0, 0.9, 1.0, 1.1);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('impish', 1.0, 0.9, 1.1, 1.0, 1.0);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('jolly', 1.0, 0.9, 1.0, 1.0, 1.1);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('lax', 1.0, 1.0, 1.1, 0.9, 1.0);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('lonely', 1.1, 1.0, 0.9, 1.0, 1.0);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('mild', 1.0, 1.1, 0.9, 1.0, 1.0);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('modest', 0.9, 1.1, 1.0, 1.0, 1.0);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('naive', 1.0, 1.0, 1.0, 0.9, 1.1);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('naughty', 1.1, 1.0, 1.0, 0.9, 1.0);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('quiet', 1.0, 1.1, 1.0, 1.0, 0.9);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('quirky', 1.0, 1.0, 1.0, 1.0, 1.0);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('rash', 1.0, 1.1, 1.0, 0.9, 1.0);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('relaxed', 1.0, 1.0, 1.1, 1.0, 0.9);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('sassy', 1.0, 1.0, 1.0, 1.1, 0.9);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('serious', 1.0, 1.0, 1.0, 1.0, 1.0);
+INSERT INTO nature (nature, attack_mult, special_attack_mult, defense_mult, special_defense_mult, speed_mult) VALUES ('timid', 0.9, 1.0, 1.0, 1.0, 1.1);
