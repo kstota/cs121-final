@@ -1,104 +1,140 @@
--- This table holds information for authenticating users based on
--- a password.  Passwords are not stored plaintext so that they
--- cannot be used by people that shouldn't have them.
--- You may extend that table to include an is_admin or role attribute if you
--- have admin or other roles for users in your application
--- (e.g. store managers, data managers, etc.)
+-- Delete tables if they already exist. Order respects referential integrity. 
+DROP TABLE IF EXISTS type_weaknesses;
+DROP TABLE IF EXISTS pokemon; 
+DROP TABLE IF EXISTS nature;
+DROP TABLE IF EXISTS base_stats;
+DROP TABLE IF EXISTS boxes;
+DROP TABLE IF EXISTS user;
 
-DROP TABLE IF EXISTS users;
-CREATE TABLE users (
+-- This table holds information for authenticating users based on
+-- a password. Passwords are not stored plaintext so that they
+-- cannot be used by people that shouldn't have them.
+CREATE TABLE user (
     -- Usernames are up to 10 characters.
     user_id VARCHAR(10) PRIMARY KEY,
-
     -- Salt will be 8 characters all the time, so we can make this 8.
     salt CHAR(8) NOT NULL,
-
     -- We use SHA-2 with 256-bit hashes. 
     password_hash BINARY(64) NOT NULL,
-
+    -- if admin, is_admin role attribute is 1
     is_admin TINYINT(1) NOT NULL
 );
 
-DROP TABLE IF EXISTS boxes;
+-- This table relates boxes to the user that owns them.
 CREATE TABLE boxes (
-    box_id VARCHAR(12) PRIMARY KEY,
-
-    user_id VARCHAR(10) NOT NULL
-)
-
-DROP TABLE IF EXISTS pokemon; 
-CREATE TABLE pokemon (
-    
-)
-
-DROP TABLE IF EXISTS type_weaknesses;
-CREATE TABLE type_weaknesses (
-    pkmn_type VARCHAR(50) NOT NULL, 
-    normal DECIMAL(2, 1),
-    fire DECIMAL(2, 1),
-    water DECIMAL(2, 1),
-    electric DECIMAL(2, 1),
-    grass DECIMAL(2, 1),
-    ice DECIMAL(2, 1),
-    fighting DECIMAL(2, 1),
-    poison DECIMAL(2, 1),
-    ground DECIMAL(2, 1),
-    flying DECIMAL(2, 1),
-    psychic DECIMAL(2, 1),
-    bug DECIMAL(2, 1),
-    rock DECIMAL(2, 1),
-    ghost DECIMAL(2, 1),
-    dragon DECIMAL(2, 1),
-    dark DECIMAL(2, 1),
-    steel DECIMAL(2, 1),
-    fairy DECIMAL(2, 1),
-    PRIMARY KEY (pkmn_type)
+    -- box_id, auto_incrementing integer column. 
+    box_id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    -- Usernames are up to 10 characters
+    user_id VARCHAR(10) NOT NULL,
+    -- user_id is set as foreign key
+    -- CASCADE constraints added here (updates and deletes)
+    FOREIGN KEY (user_id) REFERENCES user(user_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
-DROP TABLE IF EXISTS base_stats;
+-- This table contains the stat multipliers for defending types against every
+-- attacking type. 
+CREATE TABLE type_weaknesses (
+    -- defending type name. only one row per type --> primary key 
+    pkmn_type VARCHAR(10) PRIMARY KEY,
+    -- multiplier for a normal type attack against the defending type 
+    normal DECIMAL(2, 1),
+    -- multiplier for a fire type attack against the defending type 
+    fire DECIMAL(2, 1),
+    -- multiplier for a water type attack against the defending type 
+    water DECIMAL(2, 1),
+    -- multiplier for an electric type attack against the defending type 
+    electric DECIMAL(2, 1),
+    -- multiplier for a grass type attack against the defending type 
+    grass DECIMAL(2, 1),
+    -- multiplier for an ice type attack against the defending type 
+    ice DECIMAL(2, 1),
+    -- multiplier for a fighting type attack against the defending type 
+    fighting DECIMAL(2, 1),
+    -- multiplier for a poison type attack against the defending type 
+    poison DECIMAL(2, 1),
+    -- multiplier for a ground type attack against the defending type 
+    ground DECIMAL(2, 1),
+    -- multiplier for a flying type attack against the defending type 
+    flying DECIMAL(2, 1),
+    -- multiplier for a psychic type attack against the defending type 
+    psychic DECIMAL(2, 1),
+    -- multiplier for a bug type attack against the defending type 
+    bug DECIMAL(2, 1),
+    -- multiplier for a rock type attack against the defending type 
+    rock DECIMAL(2, 1),
+    -- multiplier for a ghost type attack against the defending type 
+    ghost DECIMAL(2, 1),
+    -- multiplier for a dragon type attack against the defending type 
+    dragon DECIMAL(2, 1),
+    -- multiplier for a dark type attack against the defending type 
+    dark DECIMAL(2, 1),
+    -- multiplier for a steel type attack against the defending type 
+    steel DECIMAL(2, 1),
+    -- multiplier for a fairy type attack against the defending type 
+    fairy DECIMAL(2, 1)
+);
+
 CREATE TABLE base_stats (
-    pkmn_name VARCHAR(30) NOT NULL, 
+    -- name of the pokemon (e.g. gastrodon)
+    pkmn_name VARCHAR(30) PRIMARY KEY,
+    -- type 1 of the pokemon (e.g. water)
     type_1 VARCHAR(10) NOT NULL, 
+    -- type 2 of the pokemon (e.g. ground)
     type_2 VARCHAR(10), 
     base_hp INTEGER NOT NULL, 
     base_attack INTEGER NOT NULL, 
     base_special_attack INTEGER NOT NULL, 
     base_defense INTEGER NOT NULL, 
     base_special_defense INTEGER NOT NULL, 
-    base_speed INTEGER NOT NULL,
-    PRIMARY KEY (pkmn_name)
+    base_speed INTEGER NOT NULL
 );
 
-DROP TABLE IF EXISTS nature;
 CREATE TABLE nature (
-    nature_name VARCHAR(10) NOT NULL, 
+    nature_name VARCHAR(10) PRIMARY KEY,
     attack_mult DECIMAL(2, 1) NOT NULL, 
     special_attack_mult DECIMAL(2, 1) NOT NULL, 
     defense_mult DECIMAL(2, 1) NOT NULL, 
     special_defense_mult DECIMAL(2, 1) NOT NULL, 
-    speed_mult DECIMAL(2, 1) NOT NULL, 
-    PRIMARY KEY (nature_name)
+    speed_mult DECIMAL(2, 1) NOT NULL 
 );
 
-DROP TABLE IF EXISTS pkmn_test;
-CREATE TABLE pkmn_test (
-    pkmn VARCHAR(30), 
-    hp INT, 
-    atk INT, 
-    spa INT, 
-    def INT,
-    spd INT, 
-    spe INT, 
-    pkmn_nature VARCHAR(10), 
-    lvl INT
+CREATE TABLE pokemon (
+    pkmn_id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    box_id INTEGER, 
+    pkmn_name VARCHAR(30), 
+    pkmn_nickname VARCHAR(30), 
+    hp INTEGER,
+    attack INTEGER,
+    special_attack INTEGER,
+    defense INTEGER,
+    special_defense INTEGER,
+    speed INTEGER,
+    nature_name VARCHAR(10), 
+    lvl INTEGER,
+
+    -- box_id, pkmn_name, and nature_name are set as foreign keys 
+    -- box_id from boxes, pkmn_name from base_stats, and nature_name from 
+    -- nature
+    -- CASCADE constraints added here (updates and deletes)
+    FOREIGN KEY (box_id) REFERENCES boxes(box_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+    FOREIGN KEY (pkmn_name) REFERENCES base_stats(pkmn_name)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+    FOREIGN KEY (nature_name) REFERENCES nature(nature_name)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
 -- unhacked, base stats
-INSERT INTO pkmn_test VALUES ('bulbasaur', 45, 49, 49, 65, 65, 45, 'bashful', 50);
+INSERT INTO pokemon VALUES ('bulbasaur', 45, 49, 49, 65, 65, 45, 'bashful', 50);
 -- unhacked, 252 HP / 252 SPA / 4 SpD, 31 IV for all except atk (0 IV atk)
-INSERT INTO pkmn_test VALUES ('torkoal', 177, 90, 160, 150, 91, 36, 'quiet', 50);
+INSERT INTO pokemon VALUES ('torkoal', 177, 90, 160, 150, 91, 36, 'quiet', 50);
 -- unhacked, random EV spread, IV = 16 for all 
-INSERT INTO pkmn_test VALUES ('pikachu', 174, 101, 98, 95, 124, 154, 'serious', 74);
+INSERT INTO pokemon VALUES ('pikachu', 174, 101, 98, 95, 124, 154, 'serious', 74);
 -- hacked
 -- INSERT INTO pkmn_test VALUES ('arceus', 435, );
 
