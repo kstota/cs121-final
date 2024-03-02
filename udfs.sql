@@ -16,6 +16,9 @@ DECLARE spa_mult DECIMAL(2, 1);
 DECLARE def_mult DECIMAL(2, 1);
 DECLARE spd_mult DECIMAL(2, 1);
 DECLARE spe_mult DECIMAL(2, 1);
+DECLARE evs DECIMAL (3, 0);
+
+SET evs = 508;
 
 SELECT base_hp, base_attack, base_special_attack, base_defense, 
 base_special_defense, base_speed INTO base_hp, base_atk, base_spa, base_def,
