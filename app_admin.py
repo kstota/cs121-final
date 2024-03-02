@@ -1,27 +1,11 @@
 """
-TODO: Student name(s):
-TODO: Student email(s):
-TODO: High-level program overview
+Student name(s): Kaushik Tota, Avi Sundaresan
+Student email(s): ktota@caltech.edu, asundare@caltech.edu
 
-******************************************************************************
-This is a template you may start with for your Final Project application.
-You may choose to modify it, or you may start with the example function
-stubs (most of which are incomplete).
-
-Some sections are provided as recommended program breakdowns, but are optional
-to keep, and you will probably want to extend them based on your application's
-features.
-
-TODO:
-- Make a copy of app-template.py to a more appropriately named file. You can
-  either use app.py or separate a client vs. admin interface with app_client.py,
-  app_admin.py (you can factor out shared code in a third file, which is
-  recommended based on submissions in 22wi).
-- For full credit, remove any irrelevant comments, which are included in the
-  template to help you get started. Replace this program overview with a
-  brief overview of your application as well (including your name/partners name).
-  This includes replacing everything in this *** section!
-******************************************************************************
+This is a SQL implementation of the Pokemon Storage System from the main-series
+Pokemon video games. It contains functionality for storing Pokemon in various
+boxes, as well as some neat additional functionality (detecting whether a
+Pokemon is hacked, analyzing type advantages, etc.). 
 """
 # TODO: Make sure you have these installed with pip3 if needed
 import sys  # to print error messages to sys.stderr
@@ -96,46 +80,138 @@ def example_query():
             # TODO: Please actually replace this :) 
             sys.stderr('An error occurred, give something useful for clients...')
 
+"""
+Executes the queries required for an admin to view all of the Pokemon contained
+within a particular box. This box can be one of their own boxes, OR a box of any 
+client of the Pokemon Storage Service (admin-only functionality). Returns 
+information of Pokemon contained in the box to the user.
+"""
+def view_box():
+    pass
 
+"""
+Executes the queries required for an admin to add a Pokemon to a box of their
+choosing. This box can be one of their own boxes, OR a box of any client of
+the Pokemon Storage Service (admin-only functionality). Returns whether 
+the addition was successful, and if successful, whether the stored Pokemon 
+was detected to be hacked or not.
+"""
+def add_pokemon():
+    pass
+
+"""
+Executes the queries required for an admin to delete a Pokemon from a 
+particular box. This box can be one of their own boxes, OR a box of any 
+client of the Pokemon Storage Service (admin-only functionality).
+Alternatively, enables a user to delete ALL of the Pokemon within a particular
+box. 
+"""
+def delete_pokemon():
+    pass
+
+"""
+Executes the queries required for an admin to view, at a glance, ALL Pokemon
+currently in the Pokemon Storage System which have been detected to be hacked,
+as well as the users who own those Pokemon.
+"""
+def view_hacked_pokemon():
+    pass
+
+"""
+Executes the queries required for an admin to determine which of their Pokemon
+are weak to a move of a given type. Returns a list of all Pokemon owned by that
+user who are weak to the specified type.
+"""
+def analyze_type_advantages():
+    pass
 
 # ----------------------------------------------------------------------
 # Functions for Logging Users In
 # ----------------------------------------------------------------------
-# Note: There's a distinction between database users (admin and client)
-# and application users (e.g. members registered to a store). You can
-# choose how to implement these depending on whether you have app.py or
-# app-client.py vs. app-admin.py (in which case you don't need to
-# support any prompt functionality to conditionally login to the sql database)
+def user_login():
+    username = ""
+    password = ""
+    cursor = conn.cursor()
+    print("Do you have an account? (Y/N)")
+    ans = input('Enter an option: ').lower()
+    if ans == 'y':
+        print("Please enter your username.")
+        username = input('Username: ').lower()
+        print("Please enter your password.")
+        password = input('Password: ').lower()
+        sql = "SELECT authenticate ('%s', '%s');" % (username, password)
+        try:
+            cursor.execute(sql)
+            auth_result = cursor.fetchone()[0]
+            if auth_result == 0:
+                print("Sorry, this username/password pair is not recognized. \
+                      Please restart and try again.")
+                exit()
+            else:
+                print("Welcome to the Pokemon Storage System!")
+        except mysql.connector.Error as err:
+            if DEBUG:
+                sys.stderr(err)
+                sys.exit(1)
+        else:
+            sys.stderr('An error has occurred while attempting to log in.')
+    elif ans == 'n':
+        print("Let's make an account! Please enter the username you'd like.")
+        username = input('Username: ').lower()
+        print("Please create a password. It can be up to 20 characters long.")
+        password = input('Password: ').lower()
+        sql = "CALL sp_add_user('%s', '%s');" % (username, password)
+        try:
+            cursor.execute(sql)
+            print("Your account has successfully been created! Please restart \
+                  the application and try logging in with your newly-created \
+                  credentials.")
+            exit()
+        except mysql.connector.Error as err:
+            if DEBUG:
+                sys.stderr(err)
+                sys.exit(1)
+        else:
+            sys.stderr('An error has occurred while attempting to create the \
+                       new account. Please try again.')
 
 
-# Another example of where we allow you to choose to support admin vs. 
-# client features  in the same program, or
-# separate the two as different app_client.py and app_admin.py programs 
-# using the same database.
+# ----------------------------------------------------------------------
+# Command-Line Functionality
+# ----------------------------------------------------------------------
 def show_options():
     """
-    Displays options specific for admins, such as adding new data <x>,
-    modifying <x> based on a given id, removing <x>, etc.
+    Displays options users can choose in the application, such as
+    viewing <x>, filtering results with a flag (e.g. -s to sort),
+    sending a request to do <x>, etc.
     """
-    print('What would you like to do? ')
-    print('  (x) - something nifty for admins to do')
-    print('  (x) - another nifty thing')
-    print('  (x) - yet another nifty thing')
-    print('  (x) - more nifty things!')
+    print('What would you like to do?')
+    print('  (v) - view a box')
+    print('  (a) - add a Pokemon to a box')
+    print('  (d) - delete Pokemon from a box')
+    print('  (h) - view hacked Pokemon currently in storage')
+    print('  (t) - analyze type advantages')
     print('  (q) - quit')
     print()
     ans = input('Enter an option: ').lower()
-    if ans == 'q':
+    if ans == 'v':
+        view_box()
+    elif ans == 'a':
+        add_pokemon()
+    elif ans == 'd':
+        delete_pokemon()
+    elif ans == 'h':
+        view_hacked_pokemon()
+    elif ans == 't':
+        analyze_type_advantages()
+    elif ans == 'q':
         quit_ui()
-    elif ans == '':
-        pass
-
 
 def quit_ui():
     """
-    Quits the program, printing a good bye message to the user.
+    Quits the program, printing a goodbye message to the user.
     """
-    print('Good bye!')
+    print('Have fun catching more Pokemon!')
     exit()
 
 
@@ -151,4 +227,5 @@ if __name__ == '__main__':
     # You'll need to use cursor = conn.cursor() each time you are
     # about to execute a query with cursor.execute(<sqlquery>)
     conn = get_conn()
+    user_login()
     main()
