@@ -1,0 +1,25 @@
+First, feedback from peers helped us realize that our "compound" primary key
+in the "pokemon" table consisting of the user_id, pkmn_name, and pkmn_nickname
+attributes was not necessarily the best choice, since many users tend not to
+nickname their Pokemon, thus leading to a part of the PK to be NULL. Instead,
+we have switched to an auto-incremented integer pkmn_id primary key, which we
+believe will be much more suitable for the task of denoting distinct Pokemon.
+
+Our meeting with Professor Hovik helped us validate our DDL and core approach
+to the key components of our Pokemon Storage System. She suggested we change
+the name of our "pokemon" table to "collected," and our "base_stats" table to
+"pokedex," to improve clarity for a reader (since the collected table contains
+the actual Pokemon possessed by all users of the system, while the pokedex
+table contains the generic information for every Pokemon species). We
+implemented this change in our DDL by changing the table names, as well as the
+foreign key constraints which reference either table. 
+
+Professor Hovik also gave us the helpful suggestion of implementing a "default"
+feature for the pkmn_nickname attribute within the collected table, referencing
+a similar task from the CS 1 assignment on Pokemon. This would ensure that our
+pkmn_nickname attribute is never NULL. Right now, we do not require the
+pkmn_nickname attribute to be non-NULL, since it is no longer a primary key in
+our implementation. However, we will also consider implementing the automatic
+addition of a "default" nickname (the Pokemon species name in all-uppercase,
+as is done in the video games) in the event that a user does not input one as
+a procedure if time permits.
