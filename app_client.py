@@ -7,7 +7,7 @@ Pokemon video games. It contains functionality for storing Pokemon in various
 boxes, as well as some neat additional functionality (detecting whether a
 Pokemon is hacked, analyzing type advantages, etc.). 
 """
-# TODO: Make sure you have these installed with pip3 if needed
+
 import sys  # to print error messages to sys.stderr
 import mysql.connector
 # To get error codes from the connector, useful for user-friendly
@@ -30,12 +30,12 @@ def get_conn():
     try:
         conn = mysql.connector.connect(
           host='localhost',
-          user='appadmin',
+          user='appclient',
           # Find port in MAMP or MySQL Workbench GUI or with
           # SHOW VARIABLES WHERE variable_name LIKE 'port';
           port='3306',  # this may change!
-          password='adminpw',
-          database='shelterdb' # replace this with your database name
+          password='clientpw',
+          database='pokemondb'
         )
         print('Successfully connected.')
         return conn
