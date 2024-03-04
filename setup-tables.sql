@@ -76,42 +76,74 @@ CREATE TABLE type_weaknesses (
     fairy DECIMAL(2, 1)
 );
 
+-- This table contains the base stat values for every pokemon that can be 
+-- stored in a box (i.e. a pokedex-style table). 
 CREATE TABLE pokedex (
     -- name of the pokemon (e.g. gastrodon)
     pkmn_name VARCHAR(30) PRIMARY KEY,
     -- type 1 of the pokemon (e.g. water)
     type_1 VARCHAR(10) NOT NULL, 
-    -- type 2 of the pokemon (e.g. ground)
+    -- type 2 of the pokemon (e.g. ground). Can be NULL
     type_2 VARCHAR(10), 
+    -- base hp for the given Pokemon species 
     base_hp INTEGER NOT NULL, 
+    -- base attack for the given Pokemon species 
     base_attack INTEGER NOT NULL, 
+    -- base special attack for the given Pokemon species 
     base_special_attack INTEGER NOT NULL, 
+    -- base defense for the given Pokemon species 
     base_defense INTEGER NOT NULL, 
+    -- base special defense for the given Pokemon species 
     base_special_defense INTEGER NOT NULL, 
+    -- base speed for the given Pokemon species 
     base_speed INTEGER NOT NULL
 );
 
+-- This table stores the multipliers conferred to the stats of a Pokemon 
+-- depending on its nature (25 in total).
 CREATE TABLE nature (
+    -- Nature (does not exceed 10 characters)
     nature_name VARCHAR(10) PRIMARY KEY,
+    -- multiplier conferred on attack stat by given nature
     attack_mult DECIMAL(2, 1) NOT NULL, 
+    -- multiplier conferred on special attack stat by given nature
     special_attack_mult DECIMAL(2, 1) NOT NULL, 
+    -- multiplier conferred on defense stat by given nature
     defense_mult DECIMAL(2, 1) NOT NULL, 
+    -- multiplier conferred on special defense stat by given nature
     special_defense_mult DECIMAL(2, 1) NOT NULL, 
+    -- multiplier conferred on speed stat by given nature
     speed_mult DECIMAL(2, 1) NOT NULL 
 );
 
+-- This table stores information for each Pokemon stored in the box system, 
+-- including its unique pkmn_id identifier, the box it is stored in, its name, 
+-- nickname, stat values (note: distinct from the base stats values), nature,
+-- and level.
 CREATE TABLE collected (
+    -- Unique pokemon_id, auto-incrementing integer column
     pkmn_id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    -- box_id (unique box identifier)
     box_id INTEGER, 
+    -- name of the pokemon (e.g. gastrodon)
     pkmn_name VARCHAR(30), 
+    -- nickname for the pokemon (e.g "Sluggy")
     pkmn_nickname VARCHAR(30), 
+    -- pokemon hitpoint (hp) stat
     hp INTEGER,
+    -- pokemon attack stat
     attack INTEGER,
+    -- pokemon special attack stat
     special_attack INTEGER,
+    -- pokemon defense stat
     defense INTEGER,
+    -- pokemon special defense stat
     special_defense INTEGER,
+    -- pokemon speed stat
     speed INTEGER,
+    -- pokemon's nature
     nature_name VARCHAR(10), 
+    -- pokemon's level 
     lvl INTEGER,
 
     -- box_id, pkmn_name, and nature_name are set as foreign keys 
@@ -136,7 +168,7 @@ INSERT INTO collected VALUES ('torkoal', 177, 90, 160, 150, 91, 36, 'quiet', 50)
 -- unhacked, random EV spread, IV = 16 for all 
 INSERT INTO collected VALUES ('pikachu', 174, 101, 98, 95, 124, 154, 'serious', 74);
 -- hacked
--- INSERT INTO pkmn_test VALUES ('arceus', 435, );
+INSERT INTO collected VALUES ('arceus', 435, 435, 435, 435, 435, 435, 'docile', 50);
 
 INSERT INTO type_weaknesses (pkmn_type, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('normal', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0);
 INSERT INTO type_weaknesses (pkmn_type, normal, fire, water, electric, grass, ice, fighting, poison, ground, flying, psychic, bug, rock, ghost, dragon, dark, steel, fairy) VALUES ('fire', 1.0, 0.5, 2.0, 1.0, 0.5, 0.5, 1.0, 1.0, 2.0, 1.0, 1.0, 0.5, 2.0, 1.0, 1.0, 1.0, 0.5, 0.5);
