@@ -56,23 +56,23 @@ CREATE TABLE pokedex (
     -- name of the pokemon (e.g. gastrodon)
     pkmn_name VARCHAR(30) PRIMARY KEY,
     -- official pokedex number (e.g. 423)
-    pokedex_number INTEGER NOT NULL, 
+    pokedex_number INT NOT NULL, 
     -- type 1 of the pokemon (e.g. water)
     type_1 VARCHAR(10) NOT NULL, 
     -- type 2 of the pokemon (e.g. ground). Can be NULL
     type_2 VARCHAR(10), 
     -- base hp for the given Pokemon species 
-    base_hp INTEGER NOT NULL, 
+    base_hp INT NOT NULL, 
     -- base attack for the given Pokemon species 
-    base_attack INTEGER NOT NULL, 
+    base_attack INT NOT NULL, 
     -- base special attack for the given Pokemon species 
-    base_special_attack INTEGER NOT NULL, 
+    base_special_attack INT NOT NULL, 
     -- base defense for the given Pokemon species 
-    base_defense INTEGER NOT NULL, 
+    base_defense INT NOT NULL, 
     -- base special defense for the given Pokemon species 
-    base_special_defense INTEGER NOT NULL, 
+    base_special_defense INT NOT NULL, 
     -- base speed for the given Pokemon species 
-    base_speed INTEGER NOT NULL
+    base_speed INT NOT NULL
 );
 
 -- This table stores the multipliers conferred to the stats of a Pokemon 
@@ -96,23 +96,23 @@ CREATE TABLE nature (
 -- system, including its unique pkmn_id identifier, nickname, and stat values.
 CREATE TABLE collected (
     -- Unique pokemon_id, auto-incrementing integer column
-    pkmn_id INTEGER AUTO_INCREMENT,
+    pkmn_id INT AUTO_INCREMENT,
     -- nickname for the pokemon (e.g "Sluggy")
     pkmn_nickname VARCHAR(30), 
     -- pokemon hitpoint (hp) stat
-    hp INTEGER,
+    hp INT NOT NULL,
     -- pokemon attack stat
-    attack INTEGER,
+    attack INT NOT NULL,
     -- pokemon special attack stat
-    special_attack INTEGER,
+    special_attack INT NOT NULL,
     -- pokemon defense stat
-    defense INTEGER,
+    defense INT NOT NULL,
     -- pokemon special defense stat
-    special_defense INTEGER,
+    special_defense INT NOT NULL,
     -- pokemon speed stat
-    speed INTEGER,
+    speed INT NOT NULL,
     -- pokemon's nature
-    lvl INTEGER,
+    lvl INT NOT NULL,
     -- set pkmn_id to be the primary key of this table
     PRIMARY KEY (pkmn_id)
 );
@@ -121,7 +121,7 @@ CREATE TABLE collected (
 -- using its unique pkmn_id identifier and one of 25 natures.
 CREATE TABLE has_nature (
     -- Unique pokemon_id
-    pkmn_id INTEGER PRIMARY KEY,
+    pkmn_id INT PRIMARY KEY,
     -- pokemon's nature
     nature_name VARCHAR(10), 
     -- pkmn_id and nature_name are set as foreign keys 
@@ -138,9 +138,9 @@ CREATE TABLE has_nature (
 -- it is contained in, using its unique pkmn_id and the unique box_id. 
 CREATE TABLE has_box (
     -- Unique pokemon_id
-    pkmn_id INTEGER PRIMARY KEY,
+    pkmn_id INT PRIMARY KEY,
     -- pokemon's nature
-    box_id INTEGER, 
+    box_id INT, 
     -- pkmn_id and box_id are set as foreign keys 
     -- CASCADE constraints added here (updates and deletes)
     FOREIGN KEY (pkmn_id) REFERENCES collected(pkmn_id)
@@ -155,7 +155,7 @@ CREATE TABLE has_box (
 -- (i.e. "species"), using its unique pkmn_id identifier and pkmn_name.
 CREATE TABLE has_species (
     -- Unique pokemon_id
-    pkmn_id INTEGER PRIMARY KEY,
+    pkmn_id INT PRIMARY KEY,
     -- pokemon's nature
     pkmn_name VARCHAR(10), 
     -- pkmn_id and pkmn_name are set as foreign keys 
