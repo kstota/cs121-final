@@ -89,8 +89,7 @@ END IF;
 IF spe BETWEEN FLOOR((FLOOR(2 * base_spe * lvl / 100) + 5) * spe_mult)
 AND FLOOR((FLOOR((2 * base_spe + 94) * lvl / 100) + 5) * spe_mult)
     THEN 
-    IF 
-    spe - FLOOR((FLOOR((2 * base_spe + 31) * lvl / 100) + 5) * spe_mult) > 0
+    IF spe - FLOOR((FLOOR((2 * base_spe + 31) * lvl / 100) + 5) * spe_mult) > 0
         THEN SET evs = evs - 
         (((400 * spe - 2000 * spe_mult) / (lvl * spe_mult))
         - 8 * base_spe - 132);
