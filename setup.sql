@@ -111,8 +111,11 @@ CREATE TABLE collected (
     special_defense INT NOT NULL,
     -- pokemon speed stat
     speed INT NOT NULL,
-    -- pokemon's nature
+    -- pokemon's level
     lvl INT NOT NULL,
+    -- flag denoting whether the Pokemon is detected to be hacked or not
+    -- (1 if hacked, 0 if not hacked)
+    is_hacked TINYINT,
     -- set pkmn_id to be the primary key of this table
     PRIMARY KEY (pkmn_id)
 );

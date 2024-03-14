@@ -1,10 +1,14 @@
-DROP FUNCTION IF EXISTS is_hacked;
+DROP FUNCTION IF EXISTS is_pkmn_hacked;
 DROP FUNCTION IF EXISTS detect_weak;
+DROP PROCEDURE IF EXISTS sp_update_hacked_flag;
+DROP PROCEDURE IF EXISTS sp_create_user_boxes;
+DROP TRIGGER IF EXISTS trg_create_boxes;
+DROP TRIGGER IF EXISTS trg_perform_hack_check;
 
 DELIMITER !
 
-CREATE FUNCTION is_hacked (pkmn VARCHAR(30), hp INT, atk INT, spa INT, def INT,
-                           spd INT, spe INT, pkmn_nature VARCHAR(10), lvl INT)
+CREATE FUNCTION is_pkmn_hacked (pid INT, hp INT, atk INT, spa INT, def INT,
+                           spd INT, spe INT, lvl INT)
                            RETURNS TINYINT DETERMINISTIC
 BEGIN
 
@@ -25,11 +29,12 @@ SET evs = 508;
 
 SELECT base_hp, base_attack, base_special_attack, base_defense, 
 base_special_defense, base_speed INTO base_hp, base_atk, base_spa, base_def,
-base_spd, base_spe FROM pokedex WHERE pkmn_name = pkmn;
+base_spd, base_spe FROM pokedex 
+WHERE pkmn_name = (SELECT pkmn_name FROM has_species WHERE pkmn_id = pid);
 
 SELECT attack_mult, special_attack_mult, defense_mult, special_defense_mult,
 speed_mult INTO atk_mult, spa_mult, def_mult, spd_mult, spe_mult FROM nature
-WHERE nature_name = pkmn_nature;
+WHERE nature_name = (SELECT nature_name FROM has_nature WHERE pkmn_id = pid);
 
 IF hp BETWEEN FLOOR(2 * base_hp * lvl / 100) + lvl + 10 
 AND FLOOR((2 * base_hp + 94) * lvl / 100) + lvl + 10
@@ -139,6 +144,69 @@ IF mult_t1 * mult_t2 > 1
 ELSE
     RETURN 0;
 END IF;
+
+END !
+
+DELIMITER ;
+
+DELIMITER !
+
+CREATE PROCEDURE sp_update_hacked_flag (
+    pid INT, 
+    hp INT,
+    attack INT,
+    special_attack INT,
+    defense INT,
+    special_defense INT,
+    speed INT,
+    lvl INT
+)
+BEGIN
+
+DECLARE hacked_flag TINYINT;
+SELECT 
+is_pkmn_hacked(pid, hp, attack, special_attack, defense, special_defense, 
+               speed, lvl)
+INTO hacked_flag;
+UPDATE collected SET is_hacked = hacked_flag WHERE pkmn_id = pid;
+
+END !
+
+CREATE TRIGGER trg_perform_hack_check AFTER INSERT
+    ON collected FOR EACH ROW
+BEGIN
+
+CALL sp_update_hacked_flag(NEW.pkmn_id, NEW.hp, NEW.attack, NEW.special_attack,
+                           NEW.defense, NEW.special_defense, NEW.speed, 
+                           NEW.lvl);
+
+END !
+
+DELIMITER ;
+
+DELIMITER !
+
+CREATE PROCEDURE sp_create_user_boxes (
+    new_user_id VARCHAR(10)
+)
+BEGIN
+
+DECLARE i INT DEFAULT 0;
+
+WHILE i < 16 DO
+    INSERT INTO boxes (num_pokemon) VALUES (0);
+    INSERT INTO box_owner (box_id, user_id) 
+    SELECT LAST_INSERT_ID(), new_user_id;
+    SET i = i + 1;
+END WHILE;
+
+END !
+
+CREATE TRIGGER trg_create_boxes AFTER INSERT
+    ON users FOR EACH ROW
+BEGIN
+
+CALL sp_create_user_boxes(NEW.user_id);
 
 END !
 

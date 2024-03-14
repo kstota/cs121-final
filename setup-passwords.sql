@@ -25,7 +25,7 @@ END !
 
 DELIMITER ;
 
--- Adds a new user to the user table, using the specified password (max
+-- Adds a new user to the users table, using the specified password (max
 -- of 20 characters). Salts the password with a newly-generated salt value,
 -- and then the salt and hash values are both stored in the table.
 DELIMITER !
@@ -38,13 +38,13 @@ BEGIN
 
   SELECT make_salt(8) INTO salt;
   SELECT SHA2(CONCAT(salt, password), 256) INTO password_hash;
-  INSERT INTO user VALUES (new_username, salt, password_hash);
+  INSERT INTO users VALUES (new_username, salt, password_hash);
 END !
 
 DELIMITER ;
 
 -- Authenticates the specified username and password against the data
--- in the user table.  Returns 1 if the user appears in the table, and the
+-- in the users table. Returns 1 if the user appears in the table, and the
 -- specified password hashes to the value for the user. Otherwise returns 0.
 DELIMITER !
 
@@ -57,8 +57,8 @@ BEGIN
   DECLARE user_exists TINYINT DEFAULT 0;
 
   -- check if username actually appears in the user table
-  SELECT salt, password_hash INTO s, pw_hash FROM user 
-  WHERE user.username = username;
+  SELECT salt, password_hash INTO s, pw_hash FROM users
+  WHERE users.username = username;
 
   IF s IS NOT NULL AND pw_hash IS NOT NULL THEN
     SET user_exists = 1;
@@ -87,8 +87,8 @@ BEGIN
   SELECT make_salt(8) INTO new_salt;
   SET new_password_hash = SHA2(CONCAT(new_salt, password), 256);
 
-  UPDATE user SET salt = new_salt, password_hash = new_password_hash
-  WHERE user.username = username;
+  UPDATE users SET salt = new_salt, password_hash = new_password_hash
+  WHERE users.username = username;
 END !
 
 DELIMITER ;
