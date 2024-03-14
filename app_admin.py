@@ -18,6 +18,7 @@ import mysql.connector.errorcode as errorcode
 # to an actual client. ***Set to False when done testing.***
 DEBUG = True
 
+session_username = ""
 
 # ----------------------------------------------------------------------
 # SQL Utility Functions
