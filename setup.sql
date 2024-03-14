@@ -1,10 +1,14 @@
 -- Delete tables if they already exist. Order respects referential integrity. 
 DROP TABLE IF EXISTS type_weaknesses;
+DROP TABLE IF EXISTS has_box;
+DROP TABLE IF EXISTS has_nature;
+DROP TABLE IF EXISTS has_species;
+DROP TABLE IF EXISTS box_owner;
 DROP TABLE IF EXISTS collected; 
 DROP TABLE IF EXISTS nature;
 DROP TABLE IF EXISTS pokedex;
 DROP TABLE IF EXISTS boxes;
-DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS users;
 
 -- This table holds information for authenticating users based on
 -- a password. Passwords are not stored plaintext so that they
@@ -17,33 +21,35 @@ CREATE TABLE users (
     -- We use SHA-2 with 256-bit hashes. 
     password_hash BINARY(64) NOT NULL,
     -- if admin, is_admin role attribute is 1
-    is_admin TINYINT(1) NOT NULL
+    is_admin TINYINT NOT NULL
 );
 
 -- This table holds basic information for boxes (box_id and num_pokemon).
 CREATE TABLE boxes (
     -- box_id, auto_incrementing integer column. 
-    box_id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    box_id INT AUTO_INCREMENT,
     -- number of pokemon contained in box
-    num_pokemon INT NOT NULL DEFAULT 0, 
+    num_pokemon INT NOT NULL DEFAULT 0,
+    -- set box_id to be the primary key of this table
+    PRIMARY KEY (box_id) 
     -- user_id is set as foreign key
     -- CASCADE constraints added here (updates and deletes)
-    FOREIGN KEY (user_id) REFERENCES user(user_id)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
+    -- FOREIGN KEY (user_id) REFERENCES user(user_id)
+    --     ON UPDATE CASCADE
+    --     ON DELETE CASCADE
 );
 
 -- This table relates boxes to the user that owns them.
 CREATE TABLE box_owner (
     -- box_id, auto_incrementing integer column. 
-    box_id INTEGER PRIMARY KEY,
+    box_id INT PRIMARY KEY,
     -- Usernames are up to 10 characters
     user_id VARCHAR(10) NOT NULL,
     -- box_id and user_id are set as foreign keys
     -- CASCADE constraints added here (updates and deletes)
     FOREIGN KEY (box_id) REFERENCES boxes(box_id)
         ON UPDATE CASCADE
-        ON DELETE CASCADE 
+        ON DELETE CASCADE, 
     FOREIGN KEY (user_id) REFERENCES users(user_id)
         ON UPDATE CASCADE
         ON DELETE CASCADE
@@ -95,7 +101,7 @@ CREATE TABLE nature (
 -- system, including its unique pkmn_id identifier, nickname, and stat values.
 CREATE TABLE collected (
     -- Unique pokemon_id, auto-incrementing integer column
-    pkmn_id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    pkmn_id INTEGER AUTO_INCREMENT,
     -- nickname for the pokemon (e.g "Sluggy")
     pkmn_nickname VARCHAR(30), 
     -- pokemon hitpoint (hp) stat
@@ -112,6 +118,8 @@ CREATE TABLE collected (
     speed INTEGER,
     -- pokemon's nature
     lvl INTEGER,
+    -- set pkmn_id to be the primary key of this table
+    PRIMARY KEY (pkmn_id)
 );
 
 -- This table relates the each Pokemon stored in the box system to its nature, 
@@ -125,7 +133,7 @@ CREATE TABLE has_nature (
     -- CASCADE constraints added here (updates and deletes)
     FOREIGN KEY (pkmn_id) REFERENCES collected(pkmn_id)
         ON UPDATE CASCADE
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
     FOREIGN KEY (nature_name) REFERENCES nature(nature_name)
         ON UPDATE CASCADE
         ON DELETE CASCADE
@@ -142,7 +150,7 @@ CREATE TABLE has_box (
     -- CASCADE constraints added here (updates and deletes)
     FOREIGN KEY (pkmn_id) REFERENCES collected(pkmn_id)
         ON UPDATE CASCADE
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
     FOREIGN KEY (box_id) REFERENCES boxes(box_id)
         ON UPDATE CASCADE
         ON DELETE CASCADE
@@ -159,7 +167,7 @@ CREATE TABLE has_species (
     -- CASCADE constraints added here (updates and deletes)
     FOREIGN KEY (pkmn_id) REFERENCES collected(pkmn_id)
         ON UPDATE CASCADE
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
     FOREIGN KEY (pkmn_name) REFERENCES pokedex(pkmn_name)
         ON UPDATE CASCADE
         ON DELETE CASCADE
