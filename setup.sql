@@ -31,12 +31,7 @@ CREATE TABLE boxes (
     -- number of pokemon contained in box
     num_pokemon INT NOT NULL DEFAULT 0,
     -- set box_id to be the primary key of this table
-    PRIMARY KEY (box_id) 
-    -- user_id is set as foreign key
-    -- CASCADE constraints added here (updates and deletes)
-    -- FOREIGN KEY (user_id) REFERENCES user(user_id)
-    --     ON UPDATE CASCADE
-    --     ON DELETE CASCADE
+    PRIMARY KEY (box_id)
 );
 
 -- This table relates boxes to the user that owns them.
@@ -176,10 +171,13 @@ CREATE TABLE has_species (
 -- This table contains the stat multipliers for defending types against every
 -- attacking type. 
 CREATE TABLE type_weaknesses (
-    -- defending type name. only one row per type --> primary key 
-    defending_type VARCHAR(10) PRIMARY KEY,
+    -- defending type name (one of 18 total types, just like with Pokemon)
+    defending_type VARCHAR(10),
     -- attack type (one of 18 total types, just like with Pokemon)
     attack_type VARCHAR(10),
     -- multiplier for an attack of this type against the defending type 
-    attack_multiplier DECIMAL(2, 1)
+    attack_multiplier DECIMAL(2, 1),
+    -- make primary key (defending_type, attack_type) since we want there to be
+    -- exactly one row per pair of types to encode their relationship
+    PRIMARY KEY (defending_type, attack_type)
 );
