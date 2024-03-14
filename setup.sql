@@ -21,7 +21,7 @@ CREATE TABLE users (
     -- We use SHA-2 with 256-bit hashes. 
     password_hash BINARY(64) NOT NULL,
     -- if admin, is_admin role attribute is 1
-    is_admin TINYINT NOT NULL
+    is_admin TINYINT NOT NULL DEFAULT 0
 );
 
 -- This table holds basic information for boxes (box_id and num_pokemon).
@@ -111,8 +111,11 @@ CREATE TABLE collected (
     special_defense INT NOT NULL,
     -- pokemon speed stat
     speed INT NOT NULL,
-    -- pokemon's nature
+    -- pokemon's level
     lvl INT NOT NULL,
+    -- flag denoting whether the Pokemon is detected to be hacked or not
+    -- (1 if hacked, 0 if not hacked)
+    is_hacked TINYINT,
     -- set pkmn_id to be the primary key of this table
     PRIMARY KEY (pkmn_id)
 );

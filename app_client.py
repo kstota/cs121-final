@@ -148,7 +148,7 @@ def user_login():
         username = input('Username: ').lower()
         print("Please create a password. It can be up to 20 characters long.")
         password = input('Password: ').lower()
-        sql = "CALL sp_add_user('%s', '%s');" % (username, password)
+        sql = "CALL sp_add_client('%s', '%s');" % (username, password)
         try:
             cursor.execute(sql)
             print("Your account has successfully been created! Please restart \

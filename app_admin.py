@@ -150,18 +150,19 @@ def user_login():
                 exit()
             else:
                 print("Welcome to the Pokemon Storage System!")
+                session_username = username
         except mysql.connector.Error as err:
             if DEBUG:
                 sys.stderr(err)
                 sys.exit(1)
-        else:
-            sys.stderr('An error has occurred while attempting to log in.')
+            else:
+                sys.stderr('An error has occurred while attempting to log in.')
     elif ans == 'n':
         print("Let's make an account! Please enter the username you'd like.")
         username = input('Username: ').lower()
         print("Please create a password. It can be up to 20 characters long.")
         password = input('Password: ').lower()
-        sql = "CALL sp_add_user('%s', '%s');" % (username, password)
+        sql = "CALL sp_add_admin('%s', '%s');" % (username, password)
         try:
             cursor.execute(sql)
             print("Your account has successfully been created! Please restart \
@@ -172,9 +173,9 @@ def user_login():
             if DEBUG:
                 sys.stderr(err)
                 sys.exit(1)
-        else:
-            sys.stderr('An error has occurred while attempting to create the \
-                       new account. Please try again.')
+            else:
+                sys.stderr('An error has occurred while attempting to create the \
+                        new account. Please try again.')
 
 
 # ----------------------------------------------------------------------
