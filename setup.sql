@@ -21,7 +21,7 @@ CREATE TABLE users (
     -- We use SHA-2 with 256-bit hashes. 
     password_hash BINARY(64) NOT NULL,
     -- if admin, is_admin role attribute is 1
-    is_admin TINYINT NOT NULL
+    is_admin TINYINT NOT NULL DEFAULT 0
 );
 
 -- This table holds basic information for boxes (box_id and num_pokemon).

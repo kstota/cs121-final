@@ -30,15 +30,28 @@ DELIMITER ;
 -- and then the salt and hash values are both stored in the table.
 DELIMITER !
 
-DROP PROCEDURE IF EXISTS sp_add_user;
-CREATE PROCEDURE sp_add_user(new_username VARCHAR(20), password VARCHAR(20))
+DROP PROCEDURE IF EXISTS sp_add_client;
+CREATE PROCEDURE sp_add_client(new_username VARCHAR(20), password VARCHAR(20))
 BEGIN
   DECLARE salt CHAR(8);
   DECLARE password_hash BINARY(64);
 
   SELECT make_salt(8) INTO salt;
   SELECT SHA2(CONCAT(salt, password), 256) INTO password_hash;
-  INSERT INTO users VALUES (new_username, salt, password_hash);
+  INSERT INTO users (user_id, salt, password_hash, is_admin) 
+  VALUES (new_username, salt, password_hash, 0);
+END !
+
+DROP PROCEDURE IF EXISTS sp_add_admin;
+CREATE PROCEDURE sp_add_admin(new_username VARCHAR(20), password VARCHAR(20))
+BEGIN
+  DECLARE salt CHAR(8);
+  DECLARE password_hash BINARY(64);
+
+  SELECT make_salt(8) INTO salt;
+  SELECT SHA2(CONCAT(salt, password), 256) INTO password_hash;
+  INSERT INTO users (user_id, salt, password_hash, is_admin) 
+  VALUES (new_username, salt, password_hash, 1);
 END !
 
 DELIMITER ;
