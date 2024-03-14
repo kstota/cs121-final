@@ -1,3 +1,6 @@
+DROP FUNCTION IF EXISTS is_hacked;
+DROP FUNCTION IF EXISTS detect_weak;
+
 DELIMITER !
 
 CREATE FUNCTION is_hacked (pkmn VARCHAR(30), hp INT, atk INT, spa INT, def INT,
