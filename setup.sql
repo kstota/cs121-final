@@ -1,5 +1,6 @@
 -- Delete tables if they already exist. Order respects referential integrity. 
 DROP TABLE IF EXISTS type_weaknesses;
+DROP TABLE IF EXISTS hack_checks;
 DROP TABLE IF EXISTS has_box;
 DROP TABLE IF EXISTS has_nature;
 DROP TABLE IF EXISTS has_species;
@@ -113,11 +114,21 @@ CREATE TABLE collected (
     speed INT NOT NULL,
     -- pokemon's level
     lvl INT NOT NULL,
+    -- set pkmn_id to be the primary key of this table
+    PRIMARY KEY (pkmn_id)
+);
+
+CREATE TABLE hack_checks (
+    -- Unique pokemon_id, auto-incrementing integer column
+    pkmn_id INT,
     -- flag denoting whether the Pokemon is detected to be hacked or not
     -- (1 if hacked, 0 if not hacked)
     is_hacked TINYINT,
     -- set pkmn_id to be the primary key of this table
-    PRIMARY KEY (pkmn_id)
+    PRIMARY KEY (pkmn_id),
+    FOREIGN KEY (pkmn_id) REFERENCES collected(pkmn_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
 );
 
 -- This table relates the each Pokemon stored in the box system to its nature, 

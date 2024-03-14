@@ -2,8 +2,12 @@ DROP FUNCTION IF EXISTS is_pkmn_hacked;
 DROP FUNCTION IF EXISTS detect_weak;
 DROP PROCEDURE IF EXISTS sp_update_hacked_flag;
 DROP PROCEDURE IF EXISTS sp_create_user_boxes;
+DROP PROCEDURE IF EXISTS sp_update_box_count;
+DROP PROCEDURE IF EXISTS sp_update_box_count_move;
 DROP TRIGGER IF EXISTS trg_create_boxes;
 DROP TRIGGER IF EXISTS trg_perform_hack_check;
+DROP TRIGGER IF EXISTS trg_update_box_counts;
+DROP TRIGGER IF EXISTS trg_update_box_counts_move;
 
 DELIMITER !
 
@@ -168,7 +172,7 @@ SELECT
 is_pkmn_hacked(pid, hp, attack, special_attack, defense, special_defense, 
                speed, lvl)
 INTO hacked_flag;
-UPDATE collected SET is_hacked = hacked_flag WHERE pkmn_id = pid;
+UPDATE hack_checks SET is_hacked = hacked_flag WHERE pkmn_id = pid;
 
 END !
 
@@ -207,6 +211,46 @@ CREATE TRIGGER trg_create_boxes AFTER INSERT
 BEGIN
 
 CALL sp_create_user_boxes(NEW.user_id);
+
+END !
+
+DELIMITER ;
+
+DELIMITER !
+
+CREATE PROCEDURE sp_update_box_count (
+    updated_box_id INT
+)
+BEGIN
+
+UPDATE boxes SET num_pokemon = num_pokemon + 1 WHERE box_id = updated_box_id;
+
+END !
+
+CREATE TRIGGER trg_update_box_counts AFTER INSERT
+    ON has_box FOR EACH ROW
+BEGIN
+
+CALL sp_update_box_count(NEW.box_id);
+
+END !
+
+CREATE PROCEDURE sp_update_box_count_move (
+    prev_box_id INT,
+    new_box_id INT
+)
+BEGIN
+
+UPDATE boxes SET num_pokemon = num_pokemon - 1 WHERE box_id = prev_box_id;
+UPDATE boxes SET num_pokemon = num_pokemon + 1 WHERE box_id = new_box_id;
+
+END !
+
+CREATE TRIGGER trg_update_box_counts_move AFTER UPDATE
+    ON has_box FOR EACH ROW
+BEGIN
+
+CALL sp_update_box_count_move(OLD.box_id, NEW.box_id);
 
 END !
 
