@@ -172,7 +172,7 @@ SELECT
 is_pkmn_hacked(pid, hp, attack, special_attack, defense, special_defense, 
                speed, lvl)
 INTO hacked_flag;
-UPDATE hack_checks SET is_hacked = hacked_flag WHERE pkmn_id = pid;
+INSERT INTO hack_checks VALUES (pid, hacked_flag);
 
 END !
 
