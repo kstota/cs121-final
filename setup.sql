@@ -195,3 +195,10 @@ CREATE TABLE type_weaknesses (
     -- exactly one row per pair of types to encode their relationship
     PRIMARY KEY (defending_type, attack_type)
 );
+
+ALTER TABLE pokedex DROP INDEX idx_type_1;
+CREATE INDEX idx_type_1 ON pokedex(type_1);
+
+ALTER TABLE pokedex DROP INDEX idx_type_2;
+CREATE INDEX idx_type_2 ON pokedex(type_2);
+
