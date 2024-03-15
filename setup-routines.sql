@@ -47,7 +47,7 @@ AND FLOOR((2 * base_hp + 94) * lvl / 100) + lvl + 10
         ((4 * (100 * hp - 100 * lvl - 1000) / lvl) - 8 * base_hp - 124);
     END IF;
 ELSE
-    RETURN 0;
+    RETURN 1;
 END IF;
 
 IF atk BETWEEN FLOOR((FLOOR(2 * base_atk * lvl / 100) + 5) * atk_mult)
@@ -59,7 +59,7 @@ AND FLOOR((FLOOR((2 * base_atk + 94) * lvl / 100) + 5) * atk_mult)
         - 8 * base_atk - 132);
     END IF;
 ELSE
-    RETURN 0;
+    RETURN 1;
 END IF;
 
 IF spa BETWEEN FLOOR((FLOOR(2 * base_spa * lvl / 100) + 5) * spa_mult)
@@ -71,7 +71,7 @@ AND FLOOR((FLOOR((2 * base_spa + 94) * lvl / 100) + 5) * spa_mult)
         - 8 * base_spa - 132);
     END IF;
 ELSE
-    RETURN 0;
+    RETURN 1;
 END IF;
 
 IF def BETWEEN FLOOR((FLOOR(2 * base_def * lvl / 100) + 5) * def_mult)
@@ -83,7 +83,7 @@ AND FLOOR((FLOOR((2 * base_def + 94) * lvl / 100) + 5) * def_mult)
         - 8 * base_def - 132);
     END IF;
 ELSE
-    RETURN 0;
+    RETURN 1;
 END IF;
 
 IF spd BETWEEN FLOOR((FLOOR(2 * base_spd * lvl / 100) + 5) * spd_mult)
@@ -95,7 +95,7 @@ AND FLOOR((FLOOR((2 * base_spd + 94) * lvl / 100) + 5) * spd_mult)
         - 8 * base_spd - 132);
     END IF;
 ELSE
-    RETURN 0;
+    RETURN 1;
 END IF;
 
 IF spe BETWEEN FLOOR((FLOOR(2 * base_spe * lvl / 100) + 5) * spe_mult)
@@ -107,13 +107,13 @@ AND FLOOR((FLOOR((2 * base_spe + 94) * lvl / 100) + 5) * spe_mult)
         - 8 * base_spe - 132);
     END IF;
 ELSE
-    RETURN 0;
+    RETURN 1;
 END IF;
 
 IF evs < 0
-    THEN RETURN 0;
+    THEN RETURN 1;
 ELSE
-    RETURN 1;
+    RETURN 0;
 END IF;
 
 END !
