@@ -1,10 +1,12 @@
 DROP TRIGGER IF EXISTS trg_create_boxes;
 DROP TRIGGER IF EXISTS trg_perform_hack_check;
-DROP TRIGGER IF EXISTS trg_update_box_counts;
+DROP TRIGGER IF EXISTS trg_update_box_counts_add;
+DROP TRIGGER IF EXISTS trg_update_box_counts_del;
 DROP TRIGGER IF EXISTS trg_update_box_counts_move;
 DROP PROCEDURE IF EXISTS sp_update_hacked_flag;
 DROP PROCEDURE IF EXISTS sp_create_user_boxes;
-DROP PROCEDURE IF EXISTS sp_update_box_count;
+DROP PROCEDURE IF EXISTS sp_update_box_count_add;
+DROP PROCEDURE IF EXISTS sp_update_box_count_del;
 DROP PROCEDURE IF EXISTS sp_update_box_count_move;
 DROP FUNCTION IF EXISTS is_pkmn_hacked;
 DROP FUNCTION IF EXISTS detect_weak;
@@ -13,7 +15,7 @@ DELIMITER !
 
 -- TODO: comment
 CREATE FUNCTION is_pkmn_hacked (pid INT, hp INT, atk INT, spa INT, def INT,
-                           spd INT, spe INT, lvl INT, evs INT)
+                           spd INT, spe INT, lvl INT, evs DECIMAL(10, 6))
                            RETURNS TINYINT DETERMINISTIC
 BEGIN
 
@@ -42,7 +44,7 @@ IF hp BETWEEN FLOOR(2 * base_h * lvl / 100) + lvl + 10
 AND FLOOR((2 * base_h + 94) * lvl / 100) + lvl + 10
     THEN IF hp - (FLOOR((2 * base_h + 31) * lvl / 100) + lvl + 10) > 0
         THEN SET evs = evs - 
-        ((4 * (100 * hp - 100 * lvl - 1000) / lvl) - 8 * base_h - 124);
+        (CEILING(4 * (100 * hp - 100 * lvl - 1000) / lvl) - 8 * base_h - 124);
     END IF;
 ELSE
     RETURN 1;
@@ -53,7 +55,7 @@ AND FLOOR((FLOOR((2 * base_atk + 94) * lvl / 100) + 5) * atk_mult)
     THEN 
     IF atk - FLOOR((FLOOR((2 * base_atk + 31) * lvl / 100) + 5) * atk_mult) > 0
         THEN SET evs = evs - 
-        (((400 * atk - 2000 * atk_mult) / (lvl * atk_mult))
+        (CEILING((400 * atk - 2000 * atk_mult) / (lvl * atk_mult))
         - 8 * base_atk - 132);
     END IF;
 ELSE
@@ -65,7 +67,7 @@ AND FLOOR((FLOOR((2 * base_spa + 94) * lvl / 100) + 5) * spa_mult)
     THEN 
     IF spa - FLOOR((FLOOR((2 * base_spa + 31) * lvl / 100) + 5) * spa_mult) > 0
         THEN SET evs = evs - 
-        (((400 * spa - 2000 * spa_mult) / (lvl * spa_mult))
+        (CEILING((400 * spa - 2000 * spa_mult) / (lvl * spa_mult))
         - 8 * base_spa - 132);
     END IF;
 ELSE
@@ -77,7 +79,7 @@ AND FLOOR((FLOOR((2 * base_def + 94) * lvl / 100) + 5) * def_mult)
     THEN 
     IF def - FLOOR((FLOOR((2 * base_def + 31) * lvl / 100) + 5) * def_mult) > 0
         THEN SET evs = evs - 
-        (((400 * def - 2000 * def_mult) / (lvl * def_mult))
+        (CEILING((400 * def - 2000 * def_mult) / (lvl * def_mult))
         - 8 * base_def - 132);
     END IF;
 ELSE
@@ -89,7 +91,7 @@ AND FLOOR((FLOOR((2 * base_spd + 94) * lvl / 100) + 5) * spd_mult)
     THEN 
     IF spd - FLOOR((FLOOR((2 * base_def + 31) * lvl / 100) + 5) * spd_mult) > 0
         THEN SET evs = evs - 
-        (((400 * spd - 2000 * spd_mult) / (lvl * spd_mult))
+        (CEILING((400 * spd - 2000 * spd_mult) / (lvl * spd_mult))
         - 8 * base_spd - 132);
     END IF;
 ELSE
@@ -101,7 +103,7 @@ AND FLOOR((FLOOR((2 * base_spe + 94) * lvl / 100) + 5) * spe_mult)
     THEN 
     IF spe - FLOOR((FLOOR((2 * base_spe + 31) * lvl / 100) + 5) * spe_mult) > 0
         THEN SET evs = evs - 
-        (((400 * spe - 2000 * spe_mult) / (lvl * spe_mult))
+        (CEILING((400 * spe - 2000 * spe_mult) / (lvl * spe_mult))
         - 8 * base_spe - 132);
     END IF;
 ELSE
@@ -234,7 +236,7 @@ DELIMITER ;
 DELIMITER !
 
 -- TODO: comment
-CREATE PROCEDURE sp_update_box_count (
+CREATE PROCEDURE sp_update_box_count_add (
     updated_box_id INT
 )
 BEGIN
@@ -244,11 +246,30 @@ UPDATE boxes SET num_pokemon = num_pokemon + 1 WHERE box_id = updated_box_id;
 END !
 
 -- TODO: COMMENT
-CREATE TRIGGER trg_update_box_counts AFTER INSERT
+CREATE TRIGGER trg_update_box_counts_add AFTER INSERT
     ON has_box FOR EACH ROW
 BEGIN
 
 CALL sp_update_box_count(NEW.box_id);
+
+END !
+
+-- TODO: comment
+CREATE PROCEDURE sp_update_box_count_del (
+    updated_box_id INT
+)
+BEGIN
+
+UPDATE boxes SET num_pokemon = num_pokemon - 1 WHERE box_id = updated_box_id;
+
+END !
+
+-- TODO: COMMENT
+CREATE TRIGGER trg_update_box_counts_del AFTER DELETE
+    ON has_box FOR EACH ROW
+BEGIN
+
+CALL sp_update_box_count(OLD.box_id);
 
 END !
 

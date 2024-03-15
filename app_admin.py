@@ -13,6 +13,7 @@ import mysql.connector
 # To get error codes from the connector, useful for user-friendly
 # error-handling
 import mysql.connector.errorcode as errorcode
+import prettytable
 
 # Debugging flag to print errors when debugging that shouldn't be visible
 # to an actual client. ***Set to False when done testing.***
@@ -88,7 +89,36 @@ client of the Pokemon Storage Service (admin-only functionality). Returns
 information of Pokemon contained in the box to the user.
 """
 def view_box():
-    pass
+    print("Whose boxes would you like to view?")
+    print("  (s) - your own boxes")
+    print("  (u) - a different user's boxes")
+    ans = input('Enter an option: ').lower()
+    while ans not in ['s', 'u']:
+        ans = input('Sorry, that option is not recognized. Enter an option again: ').lower()
+    username = session_username
+    if ans == 'u':
+        print("Enter the user_id of the user whose boxes you would like to view.")
+        username = input("user_id: ")
+    print("What box number would you like to view?")
+    box_num = int(input("Box (1-16): "))
+    cursor = conn.cursor()
+    sql = "SELECT pkmn_name, pokedex_number, pkmn_id, pkmn_nickname, hp, attack, special_attack, defense, special_defense, speed, lvl, is_hacked FROM box_owner NATURAL JOIN has_box NATURAL JOIN collected NATURAL JOIN has_species NATURAL JOIN pokedex NATURAL JOIN hack_checks WHERE user_id = '%s' AND (MOD(box_id - 1, 16) + 1) = %d;" % (username, box_num)
+    try:
+        print(session_username)
+        print(box_num)
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+        column_names = [i[0] for i in cursor.description]
+        table = prettytable.PrettyTable(column_names)
+        for row in rows:
+            table.add_row(row)
+        print(table)
+    except mysql.connector.Error as err:
+        if DEBUG:
+            sys.stderr.write((err))
+            sys.exit(1)
+        else:
+            sys.stderr.write(('An error occurred, and the box could not be accessed.'))
 
 """
 Executes the queries required for an admin to add a Pokemon to a box of their
@@ -165,6 +195,7 @@ def user_login():
         sql = "CALL sp_add_admin('%s', '%s');" % (username, password)
         try:
             cursor.execute(sql)
+            conn.commit()
             print("Your account has successfully been created! Please restart the application and try logging in with your newly-created credentials.")
             exit()
         except mysql.connector.Error as err:
@@ -187,29 +218,33 @@ def show_options():
     viewing <x>, filtering results with a flag (e.g. -s to sort),
     sending a request to do <x>, etc.
     """
-    print('What would you like to do?')
-    print('  (v) - view a box')
-    print('  (a) - add a Pokemon to a box')
-    print('  (d) - delete Pokemon from a box')
-    print('  (c) - display counts of stored Pokemon for all users')
-    print('  (h) - view hacked Pokemon currently in storage')
-    print('  (t) - analyze type advantages')
-    print('  (n) - add a NEW species of Pokemon to the Pokedex')
-    print('  (q) - quit')
-    print()
-    ans = input('Enter an option: ').lower()
-    if ans == 'v':
-        view_box()
-    elif ans == 'a':
-        add_pokemon()
-    elif ans == 'd':
-        delete_pokemon()
-    elif ans == 'h':
-        view_hacked_pokemon()
-    elif ans == 't':
-        analyze_type_advantages()
-    elif ans == 'q':
-        quit_ui()
+    ans = 'START'
+    while ans:
+        print('What would you like to do?')
+        print('  (v) - view a box')
+        print('  (a) - add a Pokemon to a box')
+        print('  (d) - delete Pokemon from a box')
+        print('  (c) - display counts of stored Pokemon for all users')
+        print('  (h) - view hacked Pokemon currently in storage')
+        print('  (t) - analyze type advantages')
+        print('  (n) - add a NEW species of Pokemon to the Pokedex')
+        print('  (q) - quit')
+        print()
+        ans = input('Enter an option: ').lower()
+        while ans not in ['v', 'a', 'd', 'h', 't', 'q']:
+            ans = input('Sorry, that option is not recognized. Enter an option again: ').lower()
+        if ans == 'v':
+            view_box()
+        elif ans == 'a':
+            add_pokemon()
+        elif ans == 'd':
+            delete_pokemon()
+        elif ans == 'h':
+            view_hacked_pokemon()
+        elif ans == 't':
+            analyze_type_advantages()
+        elif ans == 'q':
+            quit_ui()
 
 def quit_ui():
     """
