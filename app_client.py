@@ -35,8 +35,8 @@ def get_conn():
           # Find port in MAMP or MySQL Workbench GUI or with
           # SHOW VARIABLES WHERE variable_name LIKE 'port';
           port='3306',  # this may change!
-          password='clientpw',
-          database='pokemondb'
+          password='ClientPW2024!',
+          database='final_db_v4'
         )
         print('Successfully connected.')
         return conn

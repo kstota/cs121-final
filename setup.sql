@@ -171,7 +171,7 @@ CREATE TABLE has_species (
     -- Unique pokemon_id
     pkmn_id INT PRIMARY KEY,
     -- pokemon's nature
-    pkmn_name VARCHAR(10), 
+    pkmn_name VARCHAR(30), 
     -- pkmn_id and pkmn_name are set as foreign keys 
     -- CASCADE constraints added here (updates and deletes)
     FOREIGN KEY (pkmn_id) REFERENCES collected(pkmn_id)
