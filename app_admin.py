@@ -31,12 +31,12 @@ def get_conn():
     try:
         conn = mysql.connector.connect(
           host='localhost',
-          user='appadmin',
+          user='pssadmin',
           # Find port in MAMP or MySQL Workbench GUI or with
           # SHOW VARIABLES WHERE variable_name LIKE 'port';
           port='3306',  # this may change!
           password='AdminPW2024!',
-          database='final_db_v4'
+          database='final_db_v5'
         )
         print('Successfully connected.')
         return conn
@@ -46,14 +46,14 @@ def get_conn():
         # simulated program. Their user information would be in a users table
         # specific to your database; hence the DEBUG use.
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR and DEBUG:
-            sys.stderr('Incorrect username or password when connecting to DB.')
+            sys.stderr.write(('Incorrect username or password when connecting to DB.'))
         elif err.errno == errorcode.ER_BAD_DB_ERROR and DEBUG:
-            sys.stderr('Database does not exist.')
+            sys.stderr.write(('Database does not exist.'))
         elif DEBUG:
-            sys.stderr(err)
+            sys.stderr.write((err))
         else:
             # A fine catchall client-facing message.
-            sys.stderr('An error occurred, please contact the administrator.')
+            sys.stderr.write(('An error occurred, please contact the administrator.'))
         sys.exit(1)
 
 # ----------------------------------------------------------------------
@@ -75,11 +75,11 @@ def example_query():
     except mysql.connector.Error as err:
         # If you're testing, it's helpful to see more details printed.
         if DEBUG:
-            sys.stderr(err)
+            sys.stderr.write((err))
             sys.exit(1)
         else:
             # TODO: Please actually replace this :) 
-            sys.stderr('An error occurred, give something useful for clients...')
+            sys.stderr.write(('An error occurred, give something useful for clients...'))
 
 """
 Executes the queries required for an admin to view all of the Pokemon contained
@@ -145,37 +145,37 @@ def user_login():
             cursor.execute(sql)
             auth_result = cursor.fetchone()[0]
             if auth_result == 0:
-                print("Sorry, this username/password pair is not recognized. \
-                      Please restart and try again.")
+                print("Sorry, this username/password pair is not recognized. Please restart and try again.")
                 exit()
             else:
                 print("Welcome to the Pokemon Storage System!")
+                global session_username
                 session_username = username
         except mysql.connector.Error as err:
             if DEBUG:
-                sys.stderr(err)
+                sys.stderr.write((err))
                 sys.exit(1)
             else:
-                sys.stderr('An error has occurred while attempting to log in.')
+                sys.stderr.write(('An error has occurred while attempting to log in.'))
     elif ans == 'n':
-        print("Let's make an account! Please enter the username you'd like.")
+        print("Let's make an account! Please enter the username you'd like. It can be up to 10 characters long.")
         username = input('Username: ').lower()
         print("Please create a password. It can be up to 20 characters long.")
         password = input('Password: ').lower()
         sql = "CALL sp_add_admin('%s', '%s');" % (username, password)
         try:
             cursor.execute(sql)
-            print("Your account has successfully been created! Please restart \
-                  the application and try logging in with your newly-created \
-                  credentials.")
+            print("Your account has successfully been created! Please restart the application and try logging in with your newly-created credentials.")
             exit()
         except mysql.connector.Error as err:
             if DEBUG:
-                sys.stderr(err)
+                sys.stderr.write((err))
                 sys.exit(1)
             else:
-                sys.stderr('An error has occurred while attempting to create the \
-                        new account. Please try again.')
+                sys.stderr.write(('An error has occurred while attempting to create the new account. Please try again.'))
+    else:
+        print("Sorry, this is not an option. Please restart the application and try again.")
+        exit()
 
 
 # ----------------------------------------------------------------------
@@ -191,8 +191,10 @@ def show_options():
     print('  (v) - view a box')
     print('  (a) - add a Pokemon to a box')
     print('  (d) - delete Pokemon from a box')
+    print('  (c) - display counts of stored Pokemon for all users')
     print('  (h) - view hacked Pokemon currently in storage')
     print('  (t) - analyze type advantages')
+    print('  (n) - add a NEW species of Pokemon to the Pokedex')
     print('  (q) - quit')
     print()
     ans = input('Enter an option: ').lower()

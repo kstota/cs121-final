@@ -1,2 +1,1 @@
-SELECT base_hp FROM pokedex
-WHERE pkmn_name = (SELECT pkmn_name FROM has_species WHERE pkmn_id = 1);
+SELECT pkmn_name, pokedex_number, pkmn_nickname FROM box_owner NATURAL JOIN has_box NATURAL JOIN collected NATURAL JOIN has_species NATURAL JOIN pokedex WHERE user_id = 'ashketch' AND (MOD(box_id - 1, 16) + 1) = 1;
