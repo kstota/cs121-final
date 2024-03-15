@@ -71,7 +71,7 @@ BEGIN
 
   -- check if username actually appears in the user table
   SELECT salt, password_hash INTO s, pw_hash FROM users
-  WHERE users.username = username;
+  WHERE users.user_id = username;
 
   IF s IS NOT NULL AND pw_hash IS NOT NULL THEN
     SET user_exists = 1;
@@ -101,7 +101,7 @@ BEGIN
   SET new_password_hash = SHA2(CONCAT(new_salt, password), 256);
 
   UPDATE users SET salt = new_salt, password_hash = new_password_hash
-  WHERE users.username = username;
+  WHERE users.user_id = username;
 END !
 
 DELIMITER ;

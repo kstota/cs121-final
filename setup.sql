@@ -190,7 +190,7 @@ CREATE TABLE type_weaknesses (
     -- attack type (one of 18 total types, just like with Pokemon)
     attack_type VARCHAR(10),
     -- multiplier for an attack of this type against the defending type 
-    attack_multiplier DECIMAL(2, 1),
+    multiplier DECIMAL(2, 1),
     -- make primary key (defending_type, attack_type) since we want there to be
     -- exactly one row per pair of types to encode their relationship
     PRIMARY KEY (defending_type, attack_type)
