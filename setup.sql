@@ -190,8 +190,15 @@ CREATE TABLE type_weaknesses (
     -- attack type (one of 18 total types, just like with Pokemon)
     attack_type VARCHAR(10),
     -- multiplier for an attack of this type against the defending type 
-    attack_multiplier DECIMAL(2, 1),
+    multiplier DECIMAL(2, 1),
     -- make primary key (defending_type, attack_type) since we want there to be
     -- exactly one row per pair of types to encode their relationship
     PRIMARY KEY (defending_type, attack_type)
 );
+
+-- ALTER TABLE pokedex DROP INDEX idx_type_1;
+-- CREATE INDEX idx_type_1 ON pokedex(type_1);
+
+-- ALTER TABLE pokedex DROP INDEX idx_type_2;
+-- CREATE INDEX idx_type_2 ON pokedex(type_1);
+
