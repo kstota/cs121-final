@@ -122,7 +122,7 @@ CREATE TABLE hack_checks (
     -- Unique pokemon_id, auto-incrementing integer column
     pkmn_id INT,
     -- flag denoting whether the Pokemon is detected to be hacked or not
-    -- (1 if hacked, 0 if not hacked)
+    -- (TRUE if hacked, FALSE if not hacked)
     is_hacked TINYINT,
     -- set pkmn_id to be the primary key of this table
     PRIMARY KEY (pkmn_id),

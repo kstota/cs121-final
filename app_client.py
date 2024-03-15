@@ -13,6 +13,7 @@ import mysql.connector
 # To get error codes from the connector, useful for user-friendly
 # error-handling
 import mysql.connector.errorcode as errorcode
+import prettytable
 
 # Debugging flag to print errors when debugging that shouldn't be visible
 # to an actual client. ***Set to False when done testing.***
@@ -87,17 +88,20 @@ within a particular box. Returns information of Pokemon contained in the box
 to the user.
 """
 def view_box():
-    print("What box would you like to view?")
+    print("What box number would you like to view?")
     box_num = int(input("Box (1-16): "))
     cursor = conn.cursor()
-    sql = "SELECT pkmn_name, pokedex_number, pkmn_id, pkmn_nickname FROM box_owner NATURAL JOIN has_box NATURAL JOIN collected NATURAL JOIN has_species NATURAL JOIN pokedex WHERE user_id = '%s' AND (MOD(box_id - 1, 16) + 1) = %d;" % (session_username, box_num)
+    sql = "SELECT pkmn_name, pokedex_number, pkmn_id, pkmn_nickname, hp, attack, special_attack, defense, special_defense, speed, lvl, is_hacked FROM box_owner NATURAL JOIN has_box NATURAL JOIN collected NATURAL JOIN has_species NATURAL JOIN pokedex NATURAL JOIN hack_checks WHERE user_id = '%s' AND (MOD(box_id - 1, 16) + 1) = %d;" % (session_username, box_num)
     try:
         print(session_username)
         print(box_num)
         cursor.execute(sql)
         rows = cursor.fetchall()
-        print(rows)
-        show_options()
+        column_names = [i[0] for i in cursor.description]
+        table = prettytable.PrettyTable(column_names)
+        for row in rows:
+            table.add_row(row)
+        print(table)
     except mysql.connector.Error as err:
         if DEBUG:
             sys.stderr.write((err))
@@ -111,7 +115,78 @@ choosing. Returns whether the addition was successful, and if successful,
 whether the stored Pokemon was detected to be hacked or not.
 """
 def add_pokemon():
-    pass
+    cursor = conn.cursor()
+    print("Which box would you like to add a Pokemon to?")
+    bn = int(input("Box number (1-16): "))
+    while bn not in list(range(1, 17)):
+        bn = int(input("Please enter a valid box number (1-16): "))
+    sql = "SELECT num_pokemon FROM boxes NATURAL JOIN box_owner WHERE user_id = '%s' AND (MOD(box_id - 1, 16) + 1) = %d" % (session_username, bn)
+    try:
+        cursor.execute(sql)
+        result = cursor.fetchone()[0]
+        if result >= 30:
+            print("Sorry, this box is full. Try again with a different box!")
+            return
+    except mysql.connector.Error as err:
+        if DEBUG:
+            sys.stderr.write((err))
+            sys.exit(1)
+        else:
+            sys.stderr.write(('An error occurred, and the addition process cannot be completed.'))
+    print("Enter the species of the Pokemon you'd like to add.")
+    p_name = input("Pokemon species name: ")
+    print("What is this Pokemon's nickname? (will default to Pokemon species name if left blank)")
+    nickname = input("Pokemon's nickname: ")
+    h = int(input("Enter the Pokemon's HP stat: "))
+    atk = int(input("Enter the Pokemon's Attack stat: "))
+    spa = int(input("Enter the Pokemon's Special Attack stat: "))
+    defn = int(input("Enter the Pokemon's Defense stat: "))
+    spd = int(input("Enter the Pokemon's Special Defense stat: "))
+    spe = int(input("Enter the Pokemon's Speed stat: "))
+    lv = int(input("Enter the Pokemon's level: "))
+    nt = input("Enter the Pokemon's nature: ")
+    sql = "INSERT INTO collected (pkmn_nickname, hp, attack, special_attack, defense, special_defense, speed, lvl) VALUES ('%s', %d, %d, %d, %d, %d, %d, %d)" % (nickname, h, atk, spa, defn, spd, spe, lv)
+    try:
+        cursor.execute(sql)
+        conn.commit()
+    except mysql.connector.Error as err:
+        if DEBUG:
+            sys.stderr.write((err))
+            sys.exit(1)
+        else:
+            sys.stderr.write(('An error occurred, and the addition process cannot be completed.'))
+    sql = "INSERT INTO has_box (pkmn_id, box_id) VALUES (LAST_INSERT_ID(), (SELECT box_id FROM box_owner WHERE user_id = '%s' AND (MOD(box_id - 1, 16) + 1) = %d))" % (session_username, bn)
+    try:
+        cursor.execute(sql)
+        conn.commit()
+    except mysql.connector.Error as err:
+        if DEBUG:
+            sys.stderr.write((err))
+            sys.exit(1)
+        else:
+            sys.stderr.write(('An error occurred, and the addition process cannot be completed.'))
+    sql = "INSERT INTO has_species (pkmn_id, pkmn_name) VALUES (LAST_INSERT_ID(), '%s')" % p_name
+    try:
+        cursor.execute(sql)
+        conn.commit()
+    except mysql.connector.Error as err:
+        if DEBUG:
+            sys.stderr.write((err))
+            sys.exit(1)
+        else:
+            sys.stderr.write(('An error occurred, and the addition process cannot be completed.'))
+    sql = "INSERT INTO has_nature (pkmn_id, nature_name) VALUES (LAST_INSERT_ID(), '%s')" % nt
+    try:
+        cursor.execute(sql)
+        conn.commit()
+        print("Pokemon successfully added!")
+    except mysql.connector.Error as err:
+        if DEBUG:
+            sys.stderr.write((err))
+            sys.exit(1)
+        else:
+            sys.stderr.write(('An error occurred, and the addition process cannot be completed.'))
+
 
 """
 Executes the queries required for a user to delete a Pokemon from their box.
@@ -177,6 +252,7 @@ def user_login():
         sql = "CALL sp_add_client('%s', '%s');" % (username, password)
         try:
             cursor.execute(sql)
+            conn.commit()
             print("Your account has successfully been created! Please restart the application and try logging in with your newly-created credentials.")
             exit()
         except mysql.connector.Error as err:
@@ -199,27 +275,31 @@ def show_options():
     viewing <x>, filtering results with a flag (e.g. -s to sort),
     sending a request to do <x>, etc.
     """
-    print('What would you like to do?')
-    print('  (v) - view a box')
-    print('  (a) - add a Pokemon to a box')
-    print('  (d) - delete Pokemon from a box')
-    print('  (s) - search for Pokemon of a certain type')
-    print('  (t) - analyze type advantages')
-    print('  (q) - quit')
-    print()
-    ans = input('Enter an option: ').lower()
-    if ans == 'v':
-        view_box()
-    elif ans == 'a':
-        add_pokemon()
-    elif ans == 'd':
-        delete_pokemon()
-    elif ans == 's':
-        search_by_type()
-    elif ans == 't':
-        analyze_type_advantages()
-    elif ans == 'q':
-        quit_ui()
+    ans = 'START'
+    while ans:
+        print('What would you like to do?')
+        print('  (v) - view a box')
+        print('  (a) - add a Pokemon to a box')
+        print('  (d) - delete Pokemon from a box')
+        print('  (s) - search for Pokemon of a certain type')
+        print('  (t) - analyze type advantages')
+        print('  (q) - quit')
+        print()
+        ans = input('Enter an option: ').lower()
+        while ans not in ['v', 'a', 'd', 'h', 't', 'q']:
+            ans = input('Sorry, that option is not recognized. Enter an option again: ').lower()
+        if ans == 'v':
+            view_box()
+        elif ans == 'a':
+            add_pokemon()
+        elif ans == 'd':
+            delete_pokemon()
+        elif ans == 's':
+            search_by_type()
+        elif ans == 't':
+            analyze_type_advantages()
+        elif ans == 'q':
+            quit_ui()
 
 def quit_ui():
     """
