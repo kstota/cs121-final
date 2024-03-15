@@ -1,22 +1,23 @@
-DROP FUNCTION IF EXISTS is_pkmn_hacked;
-DROP FUNCTION IF EXISTS detect_weak;
-DROP PROCEDURE IF EXISTS sp_update_hacked_flag;
-DROP PROCEDURE IF EXISTS sp_create_user_boxes;
-DROP PROCEDURE IF EXISTS sp_update_box_count;
-DROP PROCEDURE IF EXISTS sp_update_box_count_move;
 DROP TRIGGER IF EXISTS trg_create_boxes;
 DROP TRIGGER IF EXISTS trg_perform_hack_check;
 DROP TRIGGER IF EXISTS trg_update_box_counts;
 DROP TRIGGER IF EXISTS trg_update_box_counts_move;
+DROP PROCEDURE IF EXISTS sp_update_hacked_flag;
+DROP PROCEDURE IF EXISTS sp_create_user_boxes;
+DROP PROCEDURE IF EXISTS sp_update_box_count;
+DROP PROCEDURE IF EXISTS sp_update_box_count_move;
+DROP FUNCTION IF EXISTS is_pkmn_hacked;
+DROP FUNCTION IF EXISTS detect_weak;
 
 DELIMITER !
 
+-- TODO: comment
 CREATE FUNCTION is_pkmn_hacked (pid INT, hp INT, atk INT, spa INT, def INT,
-                           spd INT, spe INT, lvl INT)
+                           spd INT, spe INT, lvl INT, evs INT)
                            RETURNS TINYINT DETERMINISTIC
 BEGIN
 
-DECLARE base_hp INT;
+DECLARE base_h INT;
 DECLARE base_atk INT;
 DECLARE base_spa INT;
 DECLARE base_def INT;
@@ -27,12 +28,9 @@ DECLARE spa_mult DECIMAL(2, 1);
 DECLARE def_mult DECIMAL(2, 1);
 DECLARE spd_mult DECIMAL(2, 1);
 DECLARE spe_mult DECIMAL(2, 1);
-DECLARE evs DECIMAL (6, 0);
-
-SET evs = 508;
 
 SELECT base_hp, base_attack, base_special_attack, base_defense, 
-base_special_defense, base_speed INTO base_hp, base_atk, base_spa, base_def,
+base_special_defense, base_speed INTO base_h, base_atk, base_spa, base_def,
 base_spd, base_spe FROM pokedex 
 WHERE pkmn_name = (SELECT pkmn_name FROM has_species WHERE pkmn_id = pid);
 
@@ -40,11 +38,11 @@ SELECT attack_mult, special_attack_mult, defense_mult, special_defense_mult,
 speed_mult INTO atk_mult, spa_mult, def_mult, spd_mult, spe_mult FROM nature
 WHERE nature_name = (SELECT nature_name FROM has_nature WHERE pkmn_id = pid);
 
-IF hp BETWEEN FLOOR(2 * base_hp * lvl / 100) + lvl + 10 
-AND FLOOR((2 * base_hp + 94) * lvl / 100) + lvl + 10
-    THEN IF hp - (FLOOR((2 * base_hp + 31) * lvl / 100) + lvl + 10) > 0
+IF hp BETWEEN FLOOR(2 * base_h * lvl / 100) + lvl + 10 
+AND FLOOR((2 * base_h + 94) * lvl / 100) + lvl + 10
+    THEN IF hp - (FLOOR((2 * base_h + 31) * lvl / 100) + lvl + 10) > 0
         THEN SET evs = evs - 
-        ((4 * (100 * hp - 100 * lvl - 1000) / lvl) - 8 * base_hp - 124);
+        ((4 * (100 * hp - 100 * lvl - 1000) / lvl) - 8 * base_h - 124);
     END IF;
 ELSE
     RETURN 1;
@@ -120,6 +118,7 @@ END !
 
 DELIMITER ;
 
+-- TODO: comment
 DELIMITER !
 
 CREATE FUNCTION detect_weak (pkmn VARCHAR(30), attack_t VARCHAR(10))
@@ -155,6 +154,7 @@ DELIMITER ;
 
 DELIMITER !
 
+-- TODO: comment
 CREATE PROCEDURE sp_update_hacked_flag (
     pid INT, 
     hp INT,
@@ -167,22 +167,35 @@ CREATE PROCEDURE sp_update_hacked_flag (
 )
 BEGIN
 
-DECLARE hacked_flag TINYINT;
+DECLARE hacked_flag INT;
+
 SELECT 
 is_pkmn_hacked(pid, hp, attack, special_attack, defense, special_defense, 
-               speed, lvl)
+               speed, lvl, 508)
 INTO hacked_flag;
 INSERT INTO hack_checks VALUES (pid, hacked_flag);
 
 END !
 
+-- TODO: comment
 CREATE TRIGGER trg_perform_hack_check AFTER INSERT
-    ON collected FOR EACH ROW
+    ON has_nature FOR EACH ROW
 BEGIN
 
-CALL sp_update_hacked_flag(NEW.pkmn_id, NEW.hp, NEW.attack, NEW.special_attack,
-                           NEW.defense, NEW.special_defense, NEW.speed, 
-                           NEW.lvl);
+DECLARE new_hp INT;
+DECLARE new_atk INT;
+DECLARE new_spa INT;
+DECLARE new_def INT;
+DECLARE new_spd INT;
+DECLARE new_spe INT;
+DECLARE new_lvl INT;
+
+SELECT hp, attack, special_attack, defense, special_defense, speed, lvl 
+INTO new_hp, new_atk, new_spa, new_def, new_spd, new_spe, new_lvl
+FROM collected WHERE collected.pkmn_id = NEW.pkmn_id;
+
+CALL sp_update_hacked_flag(NEW.pkmn_id, new_hp, new_atk, new_spa,
+                           new_def, new_spd, new_spe, new_lvl);
 
 END !
 
@@ -190,6 +203,7 @@ DELIMITER ;
 
 DELIMITER !
 
+-- TODO: comment
 CREATE PROCEDURE sp_create_user_boxes (
     new_user_id VARCHAR(10)
 )
@@ -206,6 +220,7 @@ END WHILE;
 
 END !
 
+-- TODO: comment
 CREATE TRIGGER trg_create_boxes AFTER INSERT
     ON users FOR EACH ROW
 BEGIN
@@ -218,6 +233,7 @@ DELIMITER ;
 
 DELIMITER !
 
+-- TODO: comment
 CREATE PROCEDURE sp_update_box_count (
     updated_box_id INT
 )
@@ -227,6 +243,7 @@ UPDATE boxes SET num_pokemon = num_pokemon + 1 WHERE box_id = updated_box_id;
 
 END !
 
+-- TODO: COMMENT
 CREATE TRIGGER trg_update_box_counts AFTER INSERT
     ON has_box FOR EACH ROW
 BEGIN
@@ -235,6 +252,7 @@ CALL sp_update_box_count(NEW.box_id);
 
 END !
 
+-- TODO: comment
 CREATE PROCEDURE sp_update_box_count_move (
     prev_box_id INT,
     new_box_id INT
@@ -246,6 +264,7 @@ UPDATE boxes SET num_pokemon = num_pokemon + 1 WHERE box_id = new_box_id;
 
 END !
 
+-- TODO: comment
 CREATE TRIGGER trg_update_box_counts_move AFTER UPDATE
     ON has_box FOR EACH ROW
 BEGIN

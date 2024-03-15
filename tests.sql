@@ -5,7 +5,7 @@ CALL sp_add_admin('brockrock', 'single4ever');
 
 -- Inserting collected Pokémon 
 INSERT INTO collected (pkmn_nickname, hp, attack, special_attack, defense, special_defense, speed, lvl) VALUES
-('Pika', 35, 55, 50, 40, 50, 90, 5),
+('Pika', 21, 11, 11, 11, 13, 15, 5),
 ('Bulby', 45, 49, 65, 49, 65, 45, 5),
 ('Charmy', 39, 52, 60, 43, 50, 65, 5),
 ('Squirty', 44, 48, 50, 65, 64, 43, 5),
@@ -47,3 +47,6 @@ INSERT INTO has_species (pkmn_id, pkmn_name) VALUES
 (10, 'pidgey'),
 (11, 'rattata'),
 (12, 'zubat');
+
+INSERT INTO has_nature (pkmn_id, nature_name) VALUES
+(1, 'serious');

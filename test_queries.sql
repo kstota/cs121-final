@@ -1,3 +1,2 @@
-SELECT user_id, SUM(num_pokemon) AS pokemon_total
-FROM box_owner NATURAL JOIN boxes 
-GROUP BY user_id;
+SELECT base_hp FROM pokedex
+WHERE pkmn_name = (SELECT pkmn_name FROM has_species WHERE pkmn_id = 1);
