@@ -34,12 +34,20 @@ ORDER BY pkmn_nickname;
 
 -- Gets all Pokemon owned by the user in specified box. Returns Pokemon name 
 -- and nickname.
-SELECT pkmn_name, pokedex_number, pkmn_id, pkmn_nickname hp, attack, 
+SELECT pkmn_name, pokedex_number, pkmn_id, pkmn_nickname, hp, attack, 
 special_attack, defense, special_defense, speed, lvl, is_hacked 
 FROM box_owner NATURAL JOIN has_box NATURAL JOIN collected 
     NATURAL JOIN has_species NATURAL JOIN pokedex 
     NATURAL JOIN hack_checks
-WHERE user_id = 'ashketch' AND (MOD(box_id - 1, 16) + 1) = 3;
+WHERE user_id = 'ashketch' AND (MOD(box_id - 1, 16) + 1) = 1;
+
+-- Gets all Pokemon owned by the user which fall within a given range of
+-- levels. Utilizes an index on collected.lvl to speed the query up
+-- substantially.
+SELECT pkmn_id, pkmn_nickname, lvl
+FROM collected NATURAL JOIN has_box NATURAL JOIN box_owner
+WHERE user_id = 'ashketch' AND lvl <= 80 AND lvl >= 20
+ORDER BY lvl DESC;
 
 -- Admin query: gets total number of Pokemon owned by each user in the database.
 SELECT user_id, SUM(num_pokemon) AS pokemon_total

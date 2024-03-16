@@ -30,7 +30,8 @@ GRANT EXECUTE ON PROCEDURE sp_add_client TO 'pssclient'@'localhost';
 GRANT EXECUTE ON PROCEDURE sp_change_password TO 'pssclient'@'localhost';
 GRANT EXECUTE ON PROCEDURE sp_update_hacked_flag TO 'pssclient'@'localhost';
 GRANT EXECUTE ON PROCEDURE sp_create_user_boxes TO 'pssclient'@'localhost';
-GRANT EXECUTE ON PROCEDURE sp_update_box_count TO 'pssclient'@'localhost';
+GRANT EXECUTE ON PROCEDURE sp_update_box_count_add TO 'pssclient'@'localhost';
+GRANT EXECUTE ON PROCEDURE sp_update_box_count_del TO 'pssclient'@'localhost';
 GRANT EXECUTE ON PROCEDURE sp_update_box_count_move TO 'pssclient'@'localhost';
 GRANT EXECUTE ON PROCEDURE sp_add_to_box TO 'pssclient'@'localhost';
 
