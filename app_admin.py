@@ -60,28 +60,6 @@ def get_conn():
 # ----------------------------------------------------------------------
 # Functions for Command-Line Options/Query Execution
 # ----------------------------------------------------------------------
-def example_query():
-    param1 = ''
-    cursor = conn.cursor()
-    # Remember to pass arguments as a tuple like so to prevent SQL
-    # injection.
-    sql = 'SELECT col1 FROM table WHERE col2 = \'%s\';' % (param1, )
-    try:
-        cursor.execute(sql)
-        # row = cursor.fetchone()
-        rows = cursor.fetchall()
-        for row in rows:
-            (col1val) = (row) # tuple unpacking!
-            # do stuff with row data
-    except mysql.connector.Error as err:
-        # If you're testing, it's helpful to see more details printed.
-        if DEBUG:
-            sys.stderr.write((err))
-            sys.exit(1)
-        else:
-            # TODO: Please actually replace this :) 
-            sys.stderr.write(('An error occurred, give something useful for clients...'))
-
 """
 Executes the queries required for an admin to view all of the Pokemon contained
 within a particular box. This box can be one of their own boxes, OR a box of any 
@@ -222,6 +200,7 @@ def show_options():
         print('  (v) - view a box')
         print('  (a) - add a Pokemon to a box')
         print('  (d) - delete Pokemon from a box')
+        print('  (m) - Move a Pokemon from one box to another box')
         print('  (c) - display counts of stored Pokemon for all users')
         print('  (h) - view hacked Pokemon currently in storage')
         print('  (t) - analyze type advantages')
@@ -229,7 +208,7 @@ def show_options():
         print('  (q) - quit')
         print()
         ans = input('Enter an option: ').lower()
-        while ans not in ['v', 'a', 'd', 'h', 't', 'q']:
+        while ans not in ['v', 'a', 'd', 'm', 'c', 'h', 't', 'n', 'q']:
             ans = input('Sorry, that option is not recognized. Enter an option again: ').lower()
         if ans == 'v':
             view_box()
@@ -237,10 +216,16 @@ def show_options():
             add_pokemon()
         elif ans == 'd':
             delete_pokemon()
+        elif ans == 'm':
+            pass
+        elif ans == 'c':
+            pass
         elif ans == 'h':
             view_hacked_pokemon()
         elif ans == 't':
             analyze_type_advantages()
+        elif ans == 'n':
+            pass
         elif ans == 'q':
             quit_ui()
 

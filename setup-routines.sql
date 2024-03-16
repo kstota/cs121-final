@@ -8,6 +8,8 @@ DROP PROCEDURE IF EXISTS sp_create_user_boxes;
 DROP PROCEDURE IF EXISTS sp_update_box_count_add;
 DROP PROCEDURE IF EXISTS sp_update_box_count_del;
 DROP PROCEDURE IF EXISTS sp_update_box_count_move;
+DROP PROCEDURE IF EXISTS sp_add_to_box;
+DROP PROCEDURE IF EXISTS sp_insert_into_pokedex;
 DROP FUNCTION IF EXISTS is_pkmn_hacked;
 DROP FUNCTION IF EXISTS detect_weak;
 
@@ -44,9 +46,13 @@ IF hp BETWEEN FLOOR(2 * base_h * lvl / 100) + lvl + 10
 AND FLOOR((2 * base_h + 94) * lvl / 100) + lvl + 10
     THEN IF hp - (FLOOR((2 * base_h + 31) * lvl / 100) + lvl + 10) > 0
         THEN SET evs = evs - 
-        (CEILING(4 * (100 * hp - 100 * lvl - 1000) / lvl) - 8 * base_h - 124) -
-        (4 - MOD((CEILING(4 * (100 * hp - 100 * lvl - 1000) / lvl) 
-        - 8 * base_h - 124), 4));
+        (CEILING(4 * (100 * hp - 100 * lvl - 1000) / lvl) - 8 * base_h - 124);
+        IF MOD((CEILING(4 * (100 * hp - 100 * lvl - 1000) / lvl) 
+        - 8 * base_h - 124), 4) <> 0
+            THEN SET evs = evs -
+            (4 - MOD((CEILING(4 * (100 * hp - 100 * lvl - 1000) / lvl) 
+            - 8 * base_h - 124), 4));
+        END IF;
     END IF;
 ELSE
     RETURN 1;
@@ -54,13 +60,17 @@ END IF;
 
 IF atk BETWEEN FLOOR((FLOOR(2 * base_atk * lvl / 100) + 5) * atk_mult)
 AND FLOOR((FLOOR((2 * base_atk + 94) * lvl / 100) + 5) * atk_mult)
-    THEN 
+    THEN
     IF atk - FLOOR((FLOOR((2 * base_atk + 31) * lvl / 100) + 5) * atk_mult) > 0
         THEN SET evs = evs - 
         (CEILING((400 * atk - 2000 * atk_mult) / (lvl * atk_mult))
-        - 8 * base_atk - 124) - 
-        (4 - MOD((CEILING((400 * atk - 2000 * atk_mult) / (lvl * atk_mult))
-        - 8 * base_atk - 124), 4));
+        - 8 * base_atk - 124);
+        IF MOD((CEILING((400 * atk - 2000 * atk_mult) / (lvl * atk_mult))
+        - 8 * base_atk - 124), 4) <> 0
+            THEN SET evs = evs - 
+            (4 - MOD((CEILING((400 * atk - 2000 * atk_mult) / (lvl * atk_mult))
+            - 8 * base_atk - 124), 4));
+        END IF;
     END IF;
 ELSE
     RETURN 1;
@@ -72,9 +82,13 @@ AND FLOOR((FLOOR((2 * base_spa + 94) * lvl / 100) + 5) * spa_mult)
     IF spa - FLOOR((FLOOR((2 * base_spa + 31) * lvl / 100) + 5) * spa_mult) > 0
         THEN SET evs = evs - 
         (CEILING((400 * spa - 2000 * spa_mult) / (lvl * spa_mult))
-        - 8 * base_spa - 124) -
-        (4 - MOD((CEILING((400 * spa - 2000 * spa_mult) / (lvl * spa_mult))
-        - 8 * base_spa - 124), 4));
+        - 8 * base_spa - 124);
+        IF MOD((CEILING((400 * spa - 2000 * spa_mult) / (lvl * spa_mult))
+        - 8 * base_spa - 124), 4) <> 0
+            THEN SET evs = evs - 
+            (4 - MOD((CEILING((400 * spa - 2000 * spa_mult) / (lvl * spa_mult))
+            - 8 * base_spa - 124), 4));
+        END IF;
     END IF;
 ELSE
     RETURN 1;
@@ -86,9 +100,13 @@ AND FLOOR((FLOOR((2 * base_def + 94) * lvl / 100) + 5) * def_mult)
     IF def - FLOOR((FLOOR((2 * base_def + 31) * lvl / 100) + 5) * def_mult) > 0
         THEN SET evs = evs - 
         (CEILING((400 * def - 2000 * def_mult) / (lvl * def_mult))
-        - 8 * base_def - 124) -
-        (4 - MOD((CEILING((400 * def - 2000 * def_mult) / (lvl * def_mult))
-        - 8 * base_def - 124), 4));
+        - 8 * base_def - 124);
+        IF MOD((CEILING((400 * def - 2000 * def_mult) / (lvl * def_mult))
+        - 8 * base_def - 124), 4) <> 0
+            THEN SET evs = evs - 
+            (4 - MOD((CEILING((400 * def - 2000 * def_mult) / (lvl * def_mult))
+            - 8 * base_def - 124), 4));
+        END IF;
     END IF;
 ELSE
     RETURN 1;
@@ -97,12 +115,16 @@ END IF;
 IF spd BETWEEN FLOOR((FLOOR(2 * base_spd * lvl / 100) + 5) * spd_mult)
 AND FLOOR((FLOOR((2 * base_spd + 94) * lvl / 100) + 5) * spd_mult)
     THEN 
-    IF spd - FLOOR((FLOOR((2 * base_def + 31) * lvl / 100) + 5) * spd_mult) > 0
+    IF spd - FLOOR((FLOOR((2 * base_spd + 31) * lvl / 100) + 5) * spd_mult) > 0
         THEN SET evs = evs - 
         (CEILING((400 * spd - 2000 * spd_mult) / (lvl * spd_mult))
-        - 8 * base_spd - 124) -
-        (4 - MOD((CEILING((400 * spd - 2000 * spd_mult) / (lvl * spd_mult))
-        - 8 * base_spd - 124), 4));
+        - 8 * base_spd - 124);
+        IF MOD((CEILING((400 * spd - 2000 * spd_mult) / (lvl * spd_mult))
+        - 8 * base_spd - 124), 4) <> 0
+            THEN SET evs = evs - 
+            (4 - MOD((CEILING((400 * spd - 2000 * spd_mult) / (lvl * spd_mult))
+            - 8 * base_spd - 124), 4));
+        END IF;
     END IF;
 ELSE
     RETURN 1;
@@ -114,9 +136,13 @@ AND FLOOR((FLOOR((2 * base_spe + 94) * lvl / 100) + 5) * spe_mult)
     IF spe - FLOOR((FLOOR((2 * base_spe + 31) * lvl / 100) + 5) * spe_mult) > 0
         THEN SET evs = evs - 
         (CEILING((400 * spe - 2000 * spe_mult) / (lvl * spe_mult))
-        - 8 * base_spe - 124) -
-        (4 - MOD((CEILING((400 * spe - 2000 * spe_mult) / (lvl * spe_mult))
-        - 8 * base_spe - 124), 4));
+        - 8 * base_spe - 124);
+        IF MOD((CEILING((400 * spe - 2000 * spe_mult) / (lvl * spe_mult))
+        - 8 * base_spe - 124), 4) <> 0
+            THEN SET evs = evs - 
+            (4 - MOD((CEILING((400 * spe - 2000 * spe_mult) / (lvl * spe_mult))
+            - 8 * base_spe - 124), 4));
+        END IF;
     END IF;
 ELSE
     RETURN 1;
@@ -303,6 +329,64 @@ CREATE TRIGGER trg_update_box_counts_move AFTER UPDATE
 BEGIN
 
 CALL sp_update_box_count_move(OLD.box_id, NEW.box_id);
+
+END !
+
+DELIMITER ;
+
+DELIMITER !
+-- TODO: comment
+CREATE PROCEDURE sp_insert_into_pokedex (
+    p_name VARCHAR(30),
+    dex_number INT,
+    t1 VARCHAR(10),
+    t2 VARCHAR(10),
+    b_hp INT,
+    b_attack INT,
+    b_special_attack INT,
+    b_defense INT,
+    b_special_defense INT,
+    b_speed INT
+)
+BEGIN
+
+INSERT INTO pokedex 
+(pkmn_name, pokedex_number, type_1, type_2, base_hp, base_attack, 
+base_special_attack, base_defense, base_special_defense, base_speed) VALUES
+(p_name, dex_number, t1, t2, b_hp, b_attack, b_special_attack, b_defense,
+b_special_defense, b_speed);
+
+END !
+
+-- TODO: comment
+CREATE PROCEDURE sp_add_to_box (
+    user VARCHAR(10),
+    p_name VARCHAR(30),
+    nickname VARCHAR(30),
+    bn INT,
+    h INT, 
+    atk INT,
+    spa INT,
+    def INT,
+    spd INT, 
+    spe INT, 
+    lvl INT,
+    nature VARCHAR(10)
+)
+BEGIN
+
+INSERT INTO collected 
+(pkmn_nickname, hp, attack, special_attack, defense, special_defense, speed, 
+lvl) VALUES (nickname, h, atk, spa, def, spd, spe, lvl);
+
+INSERT INTO has_box (pkmn_id, box_id) VALUES 
+(LAST_INSERT_ID(), (SELECT box_id FROM box_owner 
+WHERE user_id = user AND (MOD(box_id - 1, 16) + 1) = bn));
+
+INSERT INTO has_species (pkmn_id, pkmn_name) VALUES (LAST_INSERT_ID(), p_name);
+
+INSERT INTO has_nature (pkmn_id, nature_name) VALUES 
+(LAST_INSERT_ID(), nature);
 
 END !
 
