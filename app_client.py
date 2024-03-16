@@ -135,49 +135,6 @@ def add_pokemon():
             sys.exit(1)
         else:
             sys.stderr.write(('An error occurred, and the addition process cannot be completed.'))
-    return
-    sql = "INSERT INTO collected (pkmn_nickname, hp, attack, special_attack, defense, special_defense, speed, lvl) VALUES ('%s', %d, %d, %d, %d, %d, %d, %d)" % (nickname, h, atk, spa, defn, spd, spe, lv)
-    try:
-        cursor.execute(sql)
-        conn.commit()
-    except mysql.connector.Error as err:
-        if DEBUG:
-            sys.stderr.write((err))
-            sys.exit(1)
-        else:
-            sys.stderr.write(('An error occurred, and the addition process cannot be completed.'))
-    sql = "INSERT INTO has_box (pkmn_id, box_id) VALUES (LAST_INSERT_ID(), (SELECT box_id FROM box_owner WHERE user_id = '%s' AND (MOD(box_id - 1, 16) + 1) = %d))" % (session_username, bn)
-    try:
-        cursor.execute(sql)
-        conn.commit()
-    except mysql.connector.Error as err:
-        if DEBUG:
-            sys.stderr.write((err))
-            sys.exit(1)
-        else:
-            sys.stderr.write(('An error occurred, and the addition process cannot be completed.'))
-    sql = "INSERT INTO has_species (pkmn_id, pkmn_name) VALUES (LAST_INSERT_ID(), '%s')" % (p_name, )
-    try:
-        cursor.execute(sql)
-        conn.commit()
-    except mysql.connector.Error as err:
-        if DEBUG:
-            sys.stderr.write((err))
-            sys.exit(1)
-        else:
-            sys.stderr.write(('An error occurred, and the addition process cannot be completed.'))
-    sql = "INSERT INTO has_nature (pkmn_id, nature_name) VALUES (LAST_INSERT_ID(), '%s')" % (nt, )
-    try:
-        cursor.execute(sql)
-        conn.commit()
-        print("Pokemon successfully added!")
-    except mysql.connector.Error as err:
-        if DEBUG:
-            sys.stderr.write((err))
-            sys.exit(1)
-        else:
-            sys.stderr.write(('An error occurred, and the addition process cannot be completed.'))
-
 
 """
 Executes the queries required for a user to delete a Pokemon from their box.
