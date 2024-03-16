@@ -134,8 +134,6 @@ def add_pokemon():
 Executes the queries required for an admin to delete a Pokemon from a 
 particular box. This box can be one of their own boxes, OR a box of any 
 client of the Pokemon Storage Service (admin-only functionality).
-Alternatively, enables a user to delete ALL of the Pokemon within a particular
-box. 
 """
 def delete_pokemon():
     pass

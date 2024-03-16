@@ -44,7 +44,9 @@ IF hp BETWEEN FLOOR(2 * base_h * lvl / 100) + lvl + 10
 AND FLOOR((2 * base_h + 94) * lvl / 100) + lvl + 10
     THEN IF hp - (FLOOR((2 * base_h + 31) * lvl / 100) + lvl + 10) > 0
         THEN SET evs = evs - 
-        (CEILING(4 * (100 * hp - 100 * lvl - 1000) / lvl) - 8 * base_h - 124);
+        (CEILING(4 * (100 * hp - 100 * lvl - 1000) / lvl) - 8 * base_h - 124) -
+        (4 - MOD((CEILING(4 * (100 * hp - 100 * lvl - 1000) / lvl) 
+        - 8 * base_h - 124), 4));
     END IF;
 ELSE
     RETURN 1;
@@ -56,7 +58,9 @@ AND FLOOR((FLOOR((2 * base_atk + 94) * lvl / 100) + 5) * atk_mult)
     IF atk - FLOOR((FLOOR((2 * base_atk + 31) * lvl / 100) + 5) * atk_mult) > 0
         THEN SET evs = evs - 
         (CEILING((400 * atk - 2000 * atk_mult) / (lvl * atk_mult))
-        - 8 * base_atk - 132);
+        - 8 * base_atk - 124) - 
+        (4 - MOD((CEILING((400 * atk - 2000 * atk_mult) / (lvl * atk_mult))
+        - 8 * base_atk - 124), 4));
     END IF;
 ELSE
     RETURN 1;
@@ -68,7 +72,9 @@ AND FLOOR((FLOOR((2 * base_spa + 94) * lvl / 100) + 5) * spa_mult)
     IF spa - FLOOR((FLOOR((2 * base_spa + 31) * lvl / 100) + 5) * spa_mult) > 0
         THEN SET evs = evs - 
         (CEILING((400 * spa - 2000 * spa_mult) / (lvl * spa_mult))
-        - 8 * base_spa - 132);
+        - 8 * base_spa - 124) -
+        (4 - MOD((CEILING((400 * spa - 2000 * spa_mult) / (lvl * spa_mult))
+        - 8 * base_spa - 124), 4));
     END IF;
 ELSE
     RETURN 1;
@@ -80,7 +86,9 @@ AND FLOOR((FLOOR((2 * base_def + 94) * lvl / 100) + 5) * def_mult)
     IF def - FLOOR((FLOOR((2 * base_def + 31) * lvl / 100) + 5) * def_mult) > 0
         THEN SET evs = evs - 
         (CEILING((400 * def - 2000 * def_mult) / (lvl * def_mult))
-        - 8 * base_def - 132);
+        - 8 * base_def - 124) -
+        (4 - MOD((CEILING((400 * def - 2000 * def_mult) / (lvl * def_mult))
+        - 8 * base_def - 124), 4));
     END IF;
 ELSE
     RETURN 1;
@@ -92,7 +100,9 @@ AND FLOOR((FLOOR((2 * base_spd + 94) * lvl / 100) + 5) * spd_mult)
     IF spd - FLOOR((FLOOR((2 * base_def + 31) * lvl / 100) + 5) * spd_mult) > 0
         THEN SET evs = evs - 
         (CEILING((400 * spd - 2000 * spd_mult) / (lvl * spd_mult))
-        - 8 * base_spd - 132);
+        - 8 * base_spd - 124) -
+        (4 - MOD((CEILING((400 * spd - 2000 * spd_mult) / (lvl * spd_mult))
+        - 8 * base_spd - 124), 4));
     END IF;
 ELSE
     RETURN 1;
@@ -104,7 +114,9 @@ AND FLOOR((FLOOR((2 * base_spe + 94) * lvl / 100) + 5) * spe_mult)
     IF spe - FLOOR((FLOOR((2 * base_spe + 31) * lvl / 100) + 5) * spe_mult) > 0
         THEN SET evs = evs - 
         (CEILING((400 * spe - 2000 * spe_mult) / (lvl * spe_mult))
-        - 8 * base_spe - 132);
+        - 8 * base_spe - 124) -
+        (4 - MOD((CEILING((400 * spe - 2000 * spe_mult) / (lvl * spe_mult))
+        - 8 * base_spe - 124), 4));
     END IF;
 ELSE
     RETURN 1;

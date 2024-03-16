@@ -190,8 +190,6 @@ def add_pokemon():
 
 """
 Executes the queries required for a user to delete a Pokemon from their box.
-Alternatively, enables a user to delete ALL of the Pokemon within a particular
-box. 
 """
 def delete_pokemon():
     pass
