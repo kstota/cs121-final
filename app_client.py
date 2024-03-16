@@ -60,28 +60,6 @@ def get_conn():
 # ----------------------------------------------------------------------
 # Functions for Command-Line Options/Query Execution
 # ----------------------------------------------------------------------
-def example_query():
-    param1 = ''
-    cursor = conn.cursor()
-    # Remember to pass arguments as a tuple like so to prevent SQL
-    # injection.
-    sql = 'SELECT col1 FROM table WHERE col2 = \'%s\';' % (param1, )
-    try:
-        cursor.execute(sql)
-        # row = cursor.fetchone()
-        rows = cursor.fetchall()
-        for row in rows:
-            (col1val) = (row) # tuple unpacking!
-            # do stuff with row data
-    except mysql.connector.Error as err:
-        # If you're testing, it's helpful to see more details printed.
-        if DEBUG:
-            sys.stderr.write((err))
-            sys.exit(1)
-        else:
-            # TODO: Please actually replace this :) 
-            sys.stderr.write(('An error occurred, give something useful for clients...'))
-
 """
 Executes the queries required for a user to view all of the Pokemon contained
 within a particular box. Returns information of Pokemon contained in the box
@@ -135,8 +113,10 @@ def add_pokemon():
             sys.stderr.write(('An error occurred, and the addition process cannot be completed.'))
     print("Enter the species of the Pokemon you'd like to add.")
     p_name = input("Pokemon species name: ")
-    print("What is this Pokemon's nickname? (will default to Pokemon species name if left blank)")
+    print("What is this Pokemon's nickname? (30 character max, will default to Pokemon species name if left blank)")
     nickname = input("Pokemon's nickname: ")
+    if nickname == "":
+        nickname = p_name
     h = int(input("Enter the Pokemon's HP stat: "))
     atk = int(input("Enter the Pokemon's Attack stat: "))
     spa = int(input("Enter the Pokemon's Special Attack stat: "))
@@ -145,6 +125,17 @@ def add_pokemon():
     spe = int(input("Enter the Pokemon's Speed stat: "))
     lv = int(input("Enter the Pokemon's level: "))
     nt = input("Enter the Pokemon's nature: ")
+    try:
+        cursor.callproc('sp_add_to_box', args=(session_username, p_name, nickname, bn, h, atk, spa, defn, spd, spe, lv, nt))
+        conn.commit()
+        print("Pokemon successfully added!")
+    except mysql.connector.Error as err:
+        if DEBUG:
+            sys.stderr.write((err))
+            sys.exit(1)
+        else:
+            sys.stderr.write(('An error occurred, and the addition process cannot be completed.'))
+    return
     sql = "INSERT INTO collected (pkmn_nickname, hp, attack, special_attack, defense, special_defense, speed, lvl) VALUES ('%s', %d, %d, %d, %d, %d, %d, %d)" % (nickname, h, atk, spa, defn, spd, spe, lv)
     try:
         cursor.execute(sql)
@@ -165,7 +156,7 @@ def add_pokemon():
             sys.exit(1)
         else:
             sys.stderr.write(('An error occurred, and the addition process cannot be completed.'))
-    sql = "INSERT INTO has_species (pkmn_id, pkmn_name) VALUES (LAST_INSERT_ID(), '%s')" % p_name
+    sql = "INSERT INTO has_species (pkmn_id, pkmn_name) VALUES (LAST_INSERT_ID(), '%s')" % (p_name, )
     try:
         cursor.execute(sql)
         conn.commit()
@@ -175,7 +166,7 @@ def add_pokemon():
             sys.exit(1)
         else:
             sys.stderr.write(('An error occurred, and the addition process cannot be completed.'))
-    sql = "INSERT INTO has_nature (pkmn_id, nature_name) VALUES (LAST_INSERT_ID(), '%s')" % nt
+    sql = "INSERT INTO has_nature (pkmn_id, nature_name) VALUES (LAST_INSERT_ID(), '%s')" % (nt, )
     try:
         cursor.execute(sql)
         conn.commit()
@@ -190,8 +181,6 @@ def add_pokemon():
 
 """
 Executes the queries required for a user to delete a Pokemon from their box.
-Alternatively, enables a user to delete ALL of the Pokemon within a particular
-box. 
 """
 def delete_pokemon():
     pass
@@ -281,12 +270,13 @@ def show_options():
         print('  (v) - view a box')
         print('  (a) - add a Pokemon to a box')
         print('  (d) - delete Pokemon from a box')
+        print('  (m) - Move a Pokemon from one box to another box')
         print('  (s) - search for Pokemon of a certain type')
         print('  (t) - analyze type advantages')
         print('  (q) - quit')
         print()
         ans = input('Enter an option: ').lower()
-        while ans not in ['v', 'a', 'd', 'h', 't', 'q']:
+        while ans not in ['v', 'a', 'd', 'm', 's', 't', 'q']:
             ans = input('Sorry, that option is not recognized. Enter an option again: ').lower()
         if ans == 'v':
             view_box()
@@ -294,6 +284,8 @@ def show_options():
             add_pokemon()
         elif ans == 'd':
             delete_pokemon()
+        elif ans == 'm':
+            pass
         elif ans == 's':
             search_by_type()
         elif ans == 't':

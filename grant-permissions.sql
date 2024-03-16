@@ -32,6 +32,7 @@ GRANT EXECUTE ON PROCEDURE sp_update_hacked_flag TO 'pssclient'@'localhost';
 GRANT EXECUTE ON PROCEDURE sp_create_user_boxes TO 'pssclient'@'localhost';
 GRANT EXECUTE ON PROCEDURE sp_update_box_count TO 'pssclient'@'localhost';
 GRANT EXECUTE ON PROCEDURE sp_update_box_count_move TO 'pssclient'@'localhost';
+GRANT EXECUTE ON PROCEDURE sp_add_to_box TO 'pssclient'@'localhost';
 
 -- Flush the GRANT commands to update the privileges
 FLUSH PRIVILEGES;

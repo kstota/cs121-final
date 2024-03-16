@@ -1,1 +1,1 @@
-SELECT pkmn_name, pokedex_number, pkmn_nickname FROM box_owner NATURAL JOIN has_box NATURAL JOIN collected NATURAL JOIN has_species NATURAL JOIN pokedex WHERE user_id = 'ashketch' AND (MOD(box_id - 1, 16) + 1) = 1;
+CALL sp_add_to_box('ashketch', 'dialga', 'testing', 1, 247, 162, 258, 209, 155, 149, 65, 'modest');
