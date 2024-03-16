@@ -288,7 +288,7 @@ CREATE TRIGGER trg_update_box_counts_add AFTER INSERT
     ON has_box FOR EACH ROW
 BEGIN
 
-CALL sp_update_box_count(NEW.box_id);
+CALL sp_update_box_count_add(NEW.box_id);
 
 END !
 
@@ -303,13 +303,13 @@ UPDATE boxes SET num_pokemon = num_pokemon - 1 WHERE box_id = updated_box_id;
 END !
 
 -- TODO: COMMENT
-CREATE TRIGGER trg_update_box_counts_del AFTER DELETE
-    ON has_box FOR EACH ROW
-BEGIN
+-- CREATE TRIGGER trg_update_box_counts_del AFTER DELETE
+--     ON has_box FOR EACH ROW
+-- BEGIN
 
-CALL sp_update_box_count(OLD.box_id);
+-- CALL sp_update_box_count_del(OLD.box_id);
 
-END !
+-- END !
 
 -- TODO: comment
 CREATE PROCEDURE sp_update_box_count_move (
@@ -353,7 +353,7 @@ BEGIN
 INSERT INTO pokedex 
 (pkmn_name, pokedex_number, type_1, type_2, base_hp, base_attack, 
 base_special_attack, base_defense, base_special_defense, base_speed) VALUES
-(p_name, dex_number, t1, t2, b_hp, b_attack, b_special_attack, b_defense,
+(p_name, dex_number, t1, NULLIF(t2, ''), b_hp, b_attack, b_special_attack, b_defense,
 b_special_defense, b_speed);
 
 END !

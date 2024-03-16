@@ -1,1 +1,1 @@
-CALL sp_add_to_box('brockrock', 'golem', 'Baller', 1, 239, 240, 104, 236, 132, 101, 80, 'adamant');
+UPDATE has_box SET box_id = (SELECT box_id FROM box_owner WHERE user_id = 'mistywat' AND (MOD(box_id - 1, 16) + 1) = 3) WHERE pkmn_id = 7;
