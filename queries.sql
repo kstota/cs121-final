@@ -2,15 +2,16 @@
 -- Gets all Pokemon owned by the user in specified box. Returns Pokemon name, 
 -- pokedex number, unique Pokemon ID, Pokemon nickname, stat values, and the
 -- is_hacked flag. 
-SELECT pkmn_name, pokedex_number, pkmn_id, pkmn_nickname, hp, attack, special_attack, defense, 
-    special_defense, speed, lvl, is_hacked 
-FROM box_owner NATURAL JOIN has_box NATURAL JOIN collected NATURAL JOIN has_species NATURAL JOIN pokedex NATURAL JOIN hack_checks 
-WHERE user_id = 'ashketch' AND (MOD(box_id - 1, 16) + 1) = 3;
+SELECT pkmn_name, pokedex_number, pkmn_id, pkmn_nickname, hp, attack, 
+special_attack, defense, special_defense, speed, lvl, is_hacked 
+FROM box_owner NATURAL JOIN has_box NATURAL JOIN collected 
+NATURAL JOIN has_species NATURAL JOIN pokedex NATURAL JOIN hack_checks
+WHERE user_id = 'profoak' AND (MOD(box_id - 1, 16) + 1) = 2;
 
 -- GET NUMBER OF POKEMON IN BOX
 -- Used when attempting to add a Pokemon to a box
 SELECT num_pokemon FROM boxes NATURAL JOIN box_owner 
-WHERE user_id = 'ashketch' AND (MOD(box_id - 1, 16) + 1) = 1;
+WHERE user_id = 'profoak' AND (MOD(box_id - 1, 16) + 1) = 2;
 
 -- SEARCH BY TYPE
 -- Gets all Pokemon of a type for a given user. Returns name, nickname, box
@@ -19,14 +20,14 @@ SELECT pkmn_name, pkmn_nickname, (MOD(box_id - 1, 16) + 1) AS box_num,
     pokedex_number
 FROM box_owner NATURAL JOIN has_box NATURAL JOIN collected 
     NATURAL JOIN has_species NATURAL JOIN pokedex
-WHERE user_id = 'ashketch' AND (type_1 = 'grass' OR type_2 = 'grass')
+WHERE user_id = 'profoak' AND (type_1 = 'grass' OR type_2 = 'grass')
 ORDER BY pokedex_number;
 
 -- SEARCH LEVEL RANGE 
--- Selects all Pokemon owned by a particular user within a desired level range.  
-SELECT pkmn_id, pkmn_nickname, lvl
+-- Selects all Pokemon owned by a particular user within a desired level range.
+SELECT pkmn_id, pkmn_nickname, (MOD(box_id - 1, 16) + 1) AS box_num, lvl
 FROM collected NATURAL JOIN has_box NATURAL JOIN box_owner 
-WHERE user_id = 'ashketch' AND lvl <= 80 AND lvl >= 20
+WHERE user_id = 'profoak' AND lvl <= 80 AND lvl >= 20
 ORDER BY lvl DESC;
 
 -- SEARCH BY DEX
@@ -36,7 +37,7 @@ SELECT pokedex_number, pkmn_name, pkmn_nickname,
     (MOD(box_id - 1, 16) + 1) AS box_num
 FROM box_owner NATURAL JOIN has_box NATURAL JOIN collected 
     NATURAL JOIN has_species NATURAL JOIN pokedex
-WHERE user_id = 'ashketch' AND pokedex_number = 1
+WHERE user_id = 'profoak' AND pokedex_number = 345
 ORDER BY pkmn_nickname;
 
 -- SEARCH BY POKEMON SPECIES
@@ -47,7 +48,7 @@ SELECT pkmn_name, pokedex_number, pkmn_nickname,
     (MOD(box_id - 1, 16) + 1) AS box_num
 FROM box_owner NATURAL JOIN has_box NATURAL JOIN collected 
     NATURAL JOIN has_species NATURAL JOIN pokedex
-WHERE user_id = 'ashketch' AND (pkmn_name = 'bulbasaur')
+WHERE user_id = 'profoak' AND (pkmn_name = 'voltorb')
 ORDER BY pkmn_nickname;
 
 -- ANALYZE TYPE ADVANTAGES
@@ -56,7 +57,7 @@ SELECT pkmn_id, (MOD(box_id - 1, 16) + 1) as box_num, pkmn_name,
 pkmn_nickname, type_1, type_2
 FROM box_owner NATURAL JOIN has_box NATURAL JOIN collected
 NATURAL JOIN has_species NATURAL JOIN pokedex
-WHERE user_id = 'ashketch' AND detect_weak(pkmn_name, 'ground')
+WHERE user_id = 'profoak' AND detect_weak(pkmn_name, 'ground')
 ORDER BY pkmn_name, pkmn_nickname;
 
 -- COUNT POKEMON (ADMIN-ONLY QUERY)

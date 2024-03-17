@@ -1,3 +1,8 @@
+-- Creates and selects database for use, if it does not yet exist.
+
+CREATE DATABASE final_db_v5;
+USE final_db_v5;
+
 -- Delete tables if they already exist. Order respects referential integrity. 
 DROP TABLE IF EXISTS type_weaknesses;
 DROP TABLE IF EXISTS hack_checks;
@@ -196,6 +201,5 @@ CREATE TABLE type_weaknesses (
     PRIMARY KEY (defending_type, attack_type)
 );
 
+-- ALTER TABLE collected DROP INDEX idx_lvl
 CREATE INDEX idx_lvl ON collected(lvl DESC);
-ALTER TABLE collected DROP INDEX idx_lvl;
-

@@ -269,6 +269,20 @@ def move_pokemon():
     while bn not in [str(num) for num in range(1, 17)]:
         bn = input("Please enter a valid box number (1-16): ")
     bn = int(bn)
+    sql = "SELECT num_pokemon FROM boxes NATURAL JOIN box_owner WHERE " + \
+          "user_id = '%s' AND (MOD(box_id - 1, 16) + 1) = %d;" % (session_username, bn)
+    try:
+        cursor.execute(sql)
+        result = cursor.fetchone()[0]
+        if result >= 30:
+            print("Sorry, this box is full. Try again with a different box!")
+            return
+    except mysql.connector.Error as err:
+        if DEBUG:
+            sys.stderr.write((err))
+            sys.exit(1)
+        else:
+            sys.stderr.write(('An error occurred, and the move process cannot be completed.'))
     sql = "UPDATE has_box SET box_id = (SELECT box_id FROM box_owner WHERE " + \
           "user_id = '%s' AND (MOD(box_id - 1, 16) + 1) = %d) WHERE pkmn_id = %d;" % (session_username, bn, pid)
     try:
@@ -334,7 +348,7 @@ def search_lvl_range():
     except ValueError:
         print("Sorry, this is not a valid level value. Please try again.")
         return
-    sql = ("SELECT pkmn_id, pkmn_nickname, lvl " +
+    sql = ("SELECT pkmn_id, pkmn_nickname, (MOD(box_id - 1, 16) + 1) AS box_num, lvl " +
            "FROM collected NATURAL JOIN has_box NATURAL JOIN box_owner " +
            "WHERE user_id = '%s' AND lvl <= %d AND lvl >= %d " % (session_username, upper, lower) + 
            "ORDER BY lvl DESC;")
@@ -489,6 +503,11 @@ def user_login():
                 username = input("Your username must be a non-empty string. Please enter one: ").lower()
         print("Please create a password. It can be up to 20 characters long.")
         password = input('Password: ').lower()
+        while len(password) > 20 or password == "":
+            if len(password) > 20:
+                password = input("This password is too long! Please try a different one: ").lower()
+            if password == "":
+                password = input("Your password must be a non-empty string. Please enter one: ").lower()
         sql = "CALL sp_add_client('%s', '%s');" % (username, password)
         try:
             cursor.execute(sql)

@@ -1,9 +1,11 @@
-CALL sp_add_admin('ashketch', 'ashpw');
-CALL sp_add_client('mistywat', 'mistypw');
-CALL sp_add_client('brockrock', 'brockpw');
-CALL sp_add_client('profoak', 'oakpw');
-CALL sp_add_client('teamrocket', 'rocketpw');
--- ADD UNHACKED POKEMON FOR THE FIRST 4 BOXES OF EACH USER
+-- CREATE EXAMPLE USERS
+CALL sp_add_admin('ashketch', 'gottacatch');
+CALL sp_add_client('mistywat', 'cerulean');
+CALL sp_add_client('brockrock', 'single4ever');
+CALL sp_add_client('profoak', 'bestgrandpa');
+CALL sp_add_client('teamrocket', 'blastingoff');
+
+-- ADD UNHACKED POKEMON INTO THE FIRST 4 BOXES OF EACH USER
 CALL sp_add_to_box('profoak', 'lileep', 'rando1', 3, 229, 101, 150, 145, 157, 59, 76, 'hardy');
 CALL sp_add_to_box('profoak', 'voltorb', 'rando2', 3, 61, 21, 38, 51, 59, 68, 27, 'jolly');
 CALL sp_add_to_box('teamrocket', 'mareep', 'rando3', 3, 63, 24, 40, 44, 34, 27, 23, 'naive');
@@ -52,7 +54,7 @@ CALL sp_add_to_box('teamrocket', 'starmie', 'rando45', 1, 228, 190, 174, 138, 16
 
 -- MODIFIED VALUES --> HACKED POKEMON
 CALL sp_add_to_box('teamrocket', 'altaria', 'rando46', 1, 45, 24, 50, 31, 38, 28, 12, 'relaxed');
-CALL sp_add_to_box('mistywat', 'wailmer', 'rando47', 2, 228, 130, 120, 95, 67, 118, 59, 'mild');
-CALL sp_add_to_box('profoak', 'nincada', 'rando48', 4, 95, 66, 40, 84, 32, 45, 200, 'bold');
-CALL sp_add_to_box('profoak', 'trapinch', 'rando49', 4, 188, 240, 103, 150, 141, 105, 90, 'adamant');
-CALL sp_add_to_box('profoak', 'noctowl', 'rando50', 4, 170, 120, 117, 64, 108, 104, 52, 'naive');
+CALL sp_add_to_box('teamrocket', 'wailmer', 'rando47', 2, 228, 130, 120, 95, 67, 118, 59, 'mild');
+CALL sp_add_to_box('teamrocket', 'nincada', 'rando48', 4, 95, 66, 40, 84, 32, 45, 200, 'bold');
+CALL sp_add_to_box('teamrocket', 'trapinch', 'rando49', 4, 188, 240, 103, 150, 141, 105, 90, 'adamant');
+CALL sp_add_to_box('teamrocket', 'noctowl', 'rando50', 4, 170, 120, 117, 64, 108, 104, 52, 'naive');
