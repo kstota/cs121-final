@@ -1,11 +1,13 @@
 # cs121-final
 
+## Overview
+
 This is a SQL implementation of the Pokemon database, paired with a Python CLI
 for both regular clients and admins (who have additional admin-specific
 functionality). This implementation has the additional ability to detect
 whether a stored Pokemon is "hacked" - that is, whether its stats are
 legitimate according to in-game mechanics actually used to compute the stat
-values of a particular Pokemon.
+values of a particular Pokemon (see hack_check.pdf for more).
 
 Users have the ability to view their own Pokemon, add Pokemon
 to their boxes, release Pokemon from their boxes, move Pokemon between boxes,
