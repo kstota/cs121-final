@@ -45,6 +45,7 @@ mysql> exit
 
 In terminal:
 If you want to run the admin app: python3 app_admin.py
+
 If you want to run the client app: python3 app_client.py
 
 ## Example walkthrough of application
