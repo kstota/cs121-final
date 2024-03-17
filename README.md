@@ -29,7 +29,7 @@ https://www.kaggle.com/datasets/jadenbailey/pokemon-type-chart
 
 This application requires the following Python packages:
 
-mysql.connector, mysql.connector.python, prettytable
+mysql-connector, mysql-connector-python, prettytable
 
 Please ensure that these packages are installed (they can be installed via
 pip or any other package manager) before attempting to run the application.
