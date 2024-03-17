@@ -25,7 +25,19 @@ https://bulbapedia.bulbagarden.net/wiki/Nature
 Our type advantage table is adapted from:
 https://www.kaggle.com/datasets/jadenbailey/pokemon-type-chart
 
+## Packages
+
+This application requires the following Python packages:
+
+mysql.connector, mysql.connector.python, prettytable
+
+Please ensure that these packages are installed (they can be installed via
+pip or any other package manager) before attempting to run the application.
+
 ## Database/application setup
+
+First, download all files in the main directory of this repository. Make sure
+to also download the datasets (pokedex.csv, nature.csv, type_weaknesses.csv).
 
 Loading the database and application requires the following files to be run
 (in this exact order):
