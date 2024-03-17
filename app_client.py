@@ -17,7 +17,7 @@ import prettytable
 
 # Debugging flag to print errors when debugging that shouldn't be visible
 # to an actual client. ***Set to False when done testing.***
-DEBUG = False
+DEBUG = True
 
 session_username = ""
 
@@ -387,7 +387,38 @@ are weak to a move of a given type. Returns a list of all Pokemon owned by that
 user who are weak to the specified type.
 """
 def analyze_type_advantages():
-    pass
+    cursor = conn.cursor()
+    attack_type = ''
+    print("What is the type of the move you wish to analyze?")
+    try:
+        attack_type = input("Attack type: ")
+    except ValueError:
+        print("Sorry, this is not a valid type. Please try again.")
+        return
+
+    sql = ("SELECT pkmn_id, (MOD(box_id - 1, 16) + 1) as box_num, pkmn_name," +
+           "pkmn_nickname, type_1, type_2 " + 
+           "FROM box_owner NATURAL JOIN has_box NATURAL JOIN collected " + 
+           "NATURAL JOIN has_species NATURAL JOIN pokedex " + 
+           "WHERE user_id = '%s' AND detect_weak(pkmn_name, '%s') " % (session_username, attack_type) + 
+           "ORDER BY type_1, type_2, pkmn_name, pkmn_nickname;")
+    
+    try:
+        print("Your Pokemon that are weak to the " + attack_type + " attack type are:")
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+        column_names = [i[0] for i in cursor.description]
+        table = prettytable.PrettyTable(column_names)
+        for row in rows:
+            table.add_row(row)
+        print(table)
+    except mysql.connector.Error as err:
+        if DEBUG:
+            sys.stderr.write((err))
+            sys.exit(1)
+        else:
+            sys.stderr.write(('An error occurred, and your Pokemon could not be accessed.'))
+
 
 # ----------------------------------------------------------------------
 # Functions for Logging Users In
