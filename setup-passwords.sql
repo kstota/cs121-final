@@ -1,5 +1,8 @@
 -- Password Management 
 
+-- NOTE: Our users table is in setup.sql as opposed to setup-passwords.sql due
+-- to foreign key constraints requiring earlier initialization of that table.
+
 -- This function generates a specified number of characters for 
 -- using as a salt in passwords.
 DELIMITER !
