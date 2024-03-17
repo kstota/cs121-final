@@ -52,11 +52,12 @@ ORDER BY pkmn_nickname;
 
 -- ANALYZE TYPE ADVANTAGES
 -- Gets all Pokemon owned by a user that are weak to a specified attack type.
-SELECT pkmn_id, box_id, pkmn_name, pkmn_nickname, type_1, type_2
-FROM box_owner NATURAL JOIN has_box NATURAL JOIN collected 
-    NATURAL JOIN has_species NATURAL JOIN pokedex
+SELECT pkmn_id, (MOD(box_id - 1, 16) + 1) as box_num, pkmn_name,
+pkmn_nickname, type_1, type_2
+FROM box_owner NATURAL JOIN has_box NATURAL JOIN collected
+NATURAL JOIN has_species NATURAL JOIN pokedex
 WHERE user_id = 'ashketch' AND detect_weak(pkmn_name, 'ground')
-GROUP BY type_1, type_2;
+ORDER BY pkmn_name, pkmn_nickname;
 
 -- COUNT POKEMON (ADMIN-ONLY QUERY)
 -- Gets total number of Pokemon owned by each user in the database.

@@ -85,6 +85,7 @@ def view_box():
         for row in rows:
             table.add_row(row)
         print(table)
+        input("Press the Enter key to return to the main menu.")
     except mysql.connector.Error as err:
         if DEBUG:
             sys.stderr.write((err))
@@ -124,6 +125,10 @@ def add_pokemon():
     nickname = input("Pokemon's nickname: ")
     if nickname == "":
         nickname = p_name
+    while len(nickname) > 30:
+        nickname = input("This nickname is too long! Please try a different nickname: ")
+        if nickname == "":
+            nickname = p_name
     try:
         h = int(input("Enter the Pokemon's HP stat: "))
     except ValueError:
@@ -164,6 +169,7 @@ def add_pokemon():
         cursor.callproc('sp_add_to_box', args=(session_username, p_name, nickname, bn, h, atk, spa, defn, spd, spe, lv, nt))
         conn.commit()
         print("Pokemon successfully added!")
+        input("Press the Enter key to return to the main menu.")
     except mysql.connector.Error as err:
         if DEBUG:
             sys.stderr.write((err))
@@ -214,6 +220,7 @@ def delete_pokemon():
         cursor.execute(sql)
         conn.commit()
         print("The Pokemon was successfully released!")
+        input("Press the Enter key to return to the main menu.")
     except mysql.connector.Error as err:
         if DEBUG:
             sys.stderr.write((err))
@@ -268,6 +275,7 @@ def move_pokemon():
         cursor.execute(sql)
         conn.commit()
         print("The Pokemon was successfully moved!")
+        input("Press the Enter key to return to the main menu.")
     except mysql.connector.Error as err:
         if DEBUG:
             sys.stderr.write((err))
@@ -298,6 +306,7 @@ def search_by_type():
         for row in rows:
             table.add_row(row)
         print(table)
+        input("Press the Enter key to return to the main menu.")
     except mysql.connector.Error as err:
         if DEBUG:
             sys.stderr.write((err))
@@ -338,6 +347,7 @@ def search_lvl_range():
         for row in rows:
             table.add_row(row)
         print(table)
+        input("Press the Enter key to return to the main menu.")
     except mysql.connector.Error as err:
         if DEBUG:
             sys.stderr.write((err))
@@ -374,6 +384,7 @@ def search_by_dex():
         for row in rows:
             table.add_row(row)
         print(table)
+        input("Press the Enter key to return to the main menu.")
     except mysql.connector.Error as err:
         if DEBUG:
             sys.stderr.write((err))
@@ -401,7 +412,7 @@ def analyze_type_advantages():
            "FROM box_owner NATURAL JOIN has_box NATURAL JOIN collected " + 
            "NATURAL JOIN has_species NATURAL JOIN pokedex " + 
            "WHERE user_id = '%s' AND detect_weak(pkmn_name, '%s') " % (session_username, attack_type) + 
-           "ORDER BY type_1, type_2, pkmn_name, pkmn_nickname;")
+           "ORDER BY pkmn_name, pkmn_nickname;")
     
     try:
         print("Your Pokemon that are weak to the " + attack_type + " attack type are:")
@@ -412,6 +423,7 @@ def analyze_type_advantages():
         for row in rows:
             table.add_row(row)
         print(table)
+        input("Press the Enter key to return to the main menu.")
     except mysql.connector.Error as err:
         if DEBUG:
             sys.stderr.write((err))
@@ -470,6 +482,11 @@ def user_login():
     elif ans == 'n':
         print("Let's make an account! Please enter the username you'd like. It can be up to 10 characters long.")
         username = input('Username: ').lower()
+        while len(username) > 10 or username == "":
+            if len(username) > 10:
+                username = input("This username is too long! Please try a different one: ").lower()
+            if username == "":
+                username = input("Your username must be a non-empty string. Please enter one: ").lower()
         print("Please create a password. It can be up to 20 characters long.")
         password = input('Password: ').lower()
         sql = "CALL sp_add_client('%s', '%s');" % (username, password)
