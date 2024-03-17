@@ -1,4 +1,4 @@
-nature,attack_mult,special_attack_mult,defense_mult,special_defense_mult,speed_mult
+nature_name,attack_mult,special_attack_mult,defense_mult,special_defense_mult,speed_mult
 adamant,1.1,0.9,1,1,1
 bashful,1,1,1,1,1
 bold,0.9,1,1.1,1,1
