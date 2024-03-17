@@ -144,7 +144,12 @@ CREATE TABLE has_nature (
     -- pokemon's nature
     nature_name VARCHAR(10), 
     -- pkmn_id and nature_name are set as foreign keys 
-    -- CASCADE constraints added here (updates and deletes)
+    -- CASCADE constraints added here (updates and deletes) since we want this
+    -- information to change or be deleted depending on whether the
+    -- corresponding entries in the referenced tables are altered (ex: if a
+    -- Pokemon is deleted, the pkmn_id will disappear from collected, so we
+    -- would want the corrseponding information stored in this table to also
+    -- be removed)
     FOREIGN KEY (pkmn_id) REFERENCES collected(pkmn_id)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
@@ -161,7 +166,12 @@ CREATE TABLE has_box (
     -- pokemon's nature
     box_id INT, 
     -- pkmn_id and box_id are set as foreign keys 
-    -- CASCADE constraints added here (updates and deletes)
+    -- CASCADE constraints added here (updates and deletes) since we want this
+    -- information to change or be deleted depending on whether the
+    -- corresponding entries in the referenced tables are altered (ex: if a
+    -- Pokemon is deleted, the pkmn_id will disappear from collected, so we
+    -- would want the corrseponding information stored in this table to also
+    -- be removed)
     FOREIGN KEY (pkmn_id) REFERENCES collected(pkmn_id)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
@@ -178,7 +188,12 @@ CREATE TABLE has_species (
     -- pokemon's nature
     pkmn_name VARCHAR(30), 
     -- pkmn_id and pkmn_name are set as foreign keys 
-    -- CASCADE constraints added here (updates and deletes)
+    -- CASCADE constraints added here (updates and deletes) since we want this
+    -- information to change or be deleted depending on whether the
+    -- corresponding entries in the referenced tables are altered (ex: if a
+    -- Pokemon is deleted, the pkmn_id will disappear from collected, so we
+    -- would want the corrseponding information stored in this table to also
+    -- be removed)
     FOREIGN KEY (pkmn_id) REFERENCES collected(pkmn_id)
         ON UPDATE CASCADE
         ON DELETE CASCADE,
