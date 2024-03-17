@@ -15,7 +15,9 @@ DROP FUNCTION IF EXISTS detect_weak;
 
 DELIMITER !
 
--- TODO: comment
+-- Returns a flag indicating whether a stored Pokemon is hacked or not.
+-- Returns 1 if hacked, 0 if not hacked. Detailed algorithm design and
+-- documentation of this UDF is provided in hack_check.pdf.
 CREATE FUNCTION is_pkmn_hacked (pid INT, hp INT, atk INT, spa INT, def INT,
                            spd INT, spe INT, lvl INT, evs DECIMAL(10, 6))
                            RETURNS TINYINT DETERMINISTIC
@@ -158,7 +160,8 @@ END !
 
 DELIMITER ;
 
--- TODO: comment
+-- Returns whether a particular Pokemon is weak to a specified type. Returns
+-- 1 if it is weak, and 0 if it is not weak. 
 DELIMITER !
 
 CREATE FUNCTION detect_weak (pkmn VARCHAR(30), attack_t VARCHAR(10))
@@ -170,11 +173,15 @@ DECLARE t2 VARCHAR(10);
 DECLARE mult_t1 DECIMAL(3, 2);
 DECLARE mult_t2 DECIMAL(3, 2);
 
+-- pull the given Pokemon's types into the variables
 SELECT type_1, type_2 INTO t1, t2 FROM pokedex WHERE pkmn_name = pkmn;
 
+-- pull the multiplier corresponding to the given attack type attacking Type 1
 SELECT multiplier INTO mult_t1 FROM type_weaknesses
 WHERE defending_type = t1 AND attack_type = attack_t;
 
+-- pull the multiplier corresponding to the given attack type attacking Type 2
+-- only if t2 is non-null (i.e. if the Pokemon has a second type)
 IF t2 IS NOT NULL
     THEN SELECT multiplier INTO mult_t2 FROM type_weaknesses
     WHERE defending_type = t2 AND attack_type = attack_t;
@@ -182,6 +189,9 @@ ELSE
     SET mult_t2 = 1;
 END IF;
 
+-- If the product of the two multipliers is greater than 1, then the attacking
+-- type is super-effective and should return 1. Else, it is not super effective
+-- and the function should return 0.
 IF mult_t1 * mult_t2 > 1
     THEN RETURN 1;
 ELSE
@@ -194,7 +204,8 @@ DELIMITER ;
 
 DELIMITER !
 
--- TODO: comment
+-- Stored procedure which calls the is_pkmn_hacked() UDF to update the is_hacked
+-- flag in the hack_checks table of our database.
 CREATE PROCEDURE sp_update_hacked_flag (
     pid INT, 
     hp INT,
@@ -217,7 +228,12 @@ INSERT INTO hack_checks VALUES (pid, hacked_flag);
 
 END !
 
--- TODO: comment
+-- Triggers the stored procedure to update whether a Pokemon is hacked or not
+-- as soon as a new Pokemon is inserted. When a Pokemon is "added", four
+-- distinct tables are inserted into: the collected table, the has_box table,
+-- the has_species table, and the has_nature table. The last table inserted
+-- into is has_nature, which is why this trigger acts after an insert on the
+-- has_nature table.
 CREATE TRIGGER trg_perform_hack_check AFTER INSERT
     ON has_nature FOR EACH ROW
 BEGIN
@@ -243,7 +259,7 @@ DELIMITER ;
 
 DELIMITER !
 
--- TODO: comment
+-- Stored procedure which generates 16 boxes assigned to a user. 
 CREATE PROCEDURE sp_create_user_boxes (
     new_user_id VARCHAR(10)
 )
@@ -251,6 +267,8 @@ BEGIN
 
 DECLARE i INT DEFAULT 0;
 
+-- create 16 new boxes by inserting 16 new boxes corresponding to the given
+-- user into the boxes table and box_owner table
 WHILE i < 16 DO
     INSERT INTO boxes (num_pokemon) VALUES (0);
     INSERT INTO box_owner (box_id, user_id) 
@@ -260,7 +278,10 @@ END WHILE;
 
 END !
 
--- TODO: comment
+-- Triggers the stored procedure which generates boxes for a user as soon as
+-- a new user_id is added to the users table. This corresponds to the creation
+-- of a new user, at which point new boxes must be created for the user to
+-- store their Pokemon within.
 CREATE TRIGGER trg_create_boxes AFTER INSERT
     ON users FOR EACH ROW
 BEGIN
@@ -273,7 +294,7 @@ DELIMITER ;
 
 DELIMITER !
 
--- TODO: comment
+-- Increases the number of Pokemon stored in a box by 1.
 CREATE PROCEDURE sp_update_box_count_add (
     updated_box_id INT
 )
@@ -283,7 +304,9 @@ UPDATE boxes SET num_pokemon = num_pokemon + 1 WHERE box_id = updated_box_id;
 
 END !
 
--- TODO: COMMENT
+-- Triggers the increase of the number of Pokemon stored in a box by 1 when an
+-- entry is added to has_box, as this indicates the addition of a new Pokemon
+-- to some user's box.
 CREATE TRIGGER trg_update_box_counts_add AFTER INSERT
     ON has_box FOR EACH ROW
 BEGIN
@@ -292,7 +315,7 @@ CALL sp_update_box_count_add(NEW.box_id);
 
 END !
 
--- TODO: comment
+-- Decreases the number of Pokemon stored in a box by 1.
 CREATE PROCEDURE sp_update_box_count_del (
     updated_box_id INT
 )
@@ -302,16 +325,8 @@ UPDATE boxes SET num_pokemon = num_pokemon - 1 WHERE box_id = updated_box_id;
 
 END !
 
--- TODO: COMMENT
--- CREATE TRIGGER trg_update_box_counts_del AFTER DELETE
---     ON has_box FOR EACH ROW
--- BEGIN
-
--- CALL sp_update_box_count_del(OLD.box_id);
-
--- END !
-
--- TODO: comment
+-- Increases the number of Pokemon stored in a new box by 1, and
+-- decreases the number of Pokemon stored in an old box by 1.
 CREATE PROCEDURE sp_update_box_count_move (
     prev_box_id INT,
     new_box_id INT
@@ -323,7 +338,11 @@ UPDATE boxes SET num_pokemon = num_pokemon + 1 WHERE box_id = new_box_id;
 
 END !
 
--- TODO: comment
+-- Triggers the simultaneous addition of 1 to a box's count and subtraction
+-- of 1 to a box's count when an entry in has_box is updated. This implies
+-- that a Pokemon is moved, since the process of moving a Pokemon simply
+-- involves changing the box_id value corresponding to a pkmn_id within
+-- the has_box table.
 CREATE TRIGGER trg_update_box_counts_move AFTER UPDATE
     ON has_box FOR EACH ROW
 BEGIN
@@ -335,7 +354,9 @@ END !
 DELIMITER ;
 
 DELIMITER !
--- TODO: comment
+
+-- Stored procedure enabling an admin to insert a new species of Pokemon into
+-- the Pokedex.
 CREATE PROCEDURE sp_insert_into_pokedex (
     p_name VARCHAR(30),
     dex_number INT,
@@ -350,6 +371,8 @@ CREATE PROCEDURE sp_insert_into_pokedex (
 )
 BEGIN
 
+-- insert all relevant information about the new Pokemon species into the
+-- pokedex table
 INSERT INTO pokedex 
 (pkmn_name, pokedex_number, type_1, type_2, base_hp, base_attack, 
 base_special_attack, base_defense, base_special_defense, base_speed) VALUES
@@ -358,7 +381,8 @@ b_special_defense, b_speed);
 
 END !
 
--- TODO: comment
+-- Stored procedure which bundles the insertions required to add a Pokemon to
+-- a box. 
 CREATE PROCEDURE sp_add_to_box (
     user VARCHAR(10),
     p_name VARCHAR(30),
@@ -375,16 +399,24 @@ CREATE PROCEDURE sp_add_to_box (
 )
 BEGIN
 
+-- add to collected first, since pkmn_id in this table is an FK everywhere else
 INSERT INTO collected 
 (pkmn_nickname, hp, attack, special_attack, defense, special_defense, speed, 
 lvl) VALUES (nickname, h, atk, spa, def, spd, spe, lvl);
 
+-- add the new Pokemon to has_box to assign the Pokemon to the user-specified
+-- box number
 INSERT INTO has_box (pkmn_id, box_id) VALUES 
 (LAST_INSERT_ID(), (SELECT box_id FROM box_owner 
 WHERE user_id = user AND (MOD(box_id - 1, 16) + 1) = bn));
 
+-- add the new Pokemon to has_species to assign the Pokemon the user-specified
+-- species
 INSERT INTO has_species (pkmn_id, pkmn_name) VALUES (LAST_INSERT_ID(), p_name);
 
+-- add the new Pokemon to has_nature to assign the Pokemon the user-specified
+-- nature (note that this is the last table we insert into, which triggers
+-- trg_perform_hack_check to update the is_hacked flag for this Pokemon)
 INSERT INTO has_nature (pkmn_id, nature_name) VALUES 
 (LAST_INSERT_ID(), nature);
 
