@@ -23,6 +23,8 @@ https://bulbapedia.bulbagarden.net/wiki/Nature
 Our type advantage table is adapted from:
 https://www.kaggle.com/datasets/jadenbailey/pokemon-type-chart
 
+## Database/application setup
+
 Loading the database and application requires the following files to be run
 (in this exact order):
 
@@ -44,6 +46,8 @@ mysql> exit
 In terminal:
 If you want to run the admin app: python3 app_admin.py
 If you want to run the client app: python3 app_client.py
+
+## Example walkthrough of application
 
 The remainder of this guide will be from the perspective of the user 'profoak'
 whose password is 'bestgrandpa'. Feel free to log into this user after
