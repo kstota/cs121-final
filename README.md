@@ -28,11 +28,17 @@ Loading the database and application requires the following files to be run
 
 In MySQL:
 mysql> source setup.sql;
+
 mysql> source setup-routines.sql;
+
 mysql> source setup-passwords.sql;
+
 mysql> source load-data.sql;
+
 mysql> source grant-permissions.sql;
+
 mysql> source queries.sql;
+
 mysql> exit
 
 In terminal:
@@ -61,12 +67,19 @@ this Pikachu 'starter' so that we can find it later. Enter the following
 stats for this Pikachu when prompted:
 
 HP: 19
+
 Attack: 11
+
 Special Attack: 11
+
 Defense: 10
+
 Special Defense: 11
+
 Speed: 15
+
 Level: 5
+
 Nature: Docile
 
 Return to the main menu by pressing Enter. Now, let's view Ash's box to ensure
