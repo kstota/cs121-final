@@ -196,9 +196,6 @@ CREATE TABLE type_weaknesses (
     PRIMARY KEY (defending_type, attack_type)
 );
 
-ALTER TABLE pokedex DROP INDEX idx_type_1;
-CREATE INDEX idx_type_1 ON pokedex(type_1);
-
-ALTER TABLE pokedex DROP INDEX idx_type_2;
-CREATE INDEX idx_type_2 ON pokedex(type_2);
+CREATE INDEX idx_lvl ON collected(lvl DESC);
+ALTER TABLE collected DROP INDEX idx_lvl;
 
