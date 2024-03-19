@@ -2,8 +2,8 @@
 
 ## Overview
 
-This is a SQL implementation of the Pokemon database, paired with a Python CLI
-for both regular clients and admins (who have additional admin-specific
+This is a SQL implementation of the Pokemon Storage System, paired with a Python
+CLI for both regular clients and admins (who have additional admin-specific
 functionality). This implementation has the additional ability to detect
 whether a stored Pokemon is "hacked" - that is, whether its stats are
 legitimate according to in-game mechanics actually used to compute the stat
@@ -43,6 +43,7 @@ Loading the database and application requires the following files to be run
 (in this exact order):
 
 In MySQL:
+
 mysql> source setup.sql;
 
 mysql> source setup-routines.sql;
@@ -58,6 +59,7 @@ mysql> source queries.sql;
 mysql> exit
 
 In terminal:
+
 If you want to run the admin app: python3 app_admin.py
 
 If you want to run the client app: python3 app_client.py
